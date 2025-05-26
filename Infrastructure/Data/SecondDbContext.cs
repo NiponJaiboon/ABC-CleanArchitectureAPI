@@ -13,7 +13,10 @@ namespace Infrastructure.Data
         {
         }
 
-        // Define DbSet properties for your entities here
-        // public DbSet<YourEntity> YourEntities { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            // Additional model configuration can go here
+        }
     }
 }
