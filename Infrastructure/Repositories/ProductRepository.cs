@@ -21,13 +21,14 @@ namespace Infrastructure.Repositories
             _firstDbContext = firstDbContext;
             _secondDbContext = secondDbContext;
         }
-        public async Task AddProductAsync(Product product)
+
+        public async Task AddAsync(Product entity)
         {
-            var res = _firstDbContext.Products.Add(product);
+            var res = _firstDbContext.Products.Add(entity);
             await _firstDbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteProductAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var product = await _firstDbContext.Products.FindAsync(id);
             if (product != null)
@@ -37,7 +38,7 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async Task<IEnumerable<Product>> GetAllProductsAsync()
+        public async Task<IEnumerable<Product>> GetAllAsync()
         {
             try
             {
@@ -56,21 +57,35 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async Task<Product> GetProductByIdAsync(int id)
+        public async Task<Product> GetByIdAsync(int id)
         {
             return await _firstDbContext.Products.FindAsync(id);
         }
 
-        public async Task UpdateProductAsync(Product product)
+        public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(int id)
         {
-            var trackedEntity = await _firstDbContext.Products.FindAsync(product.Id);
+            return await _firstDbContext.Products
+                .Where(p => p.Id == id)
+                .ToListAsync();
+        }
+
+        public async Task<Product> GetProductWithDetailsAsync(int id)
+        {
+            return await _firstDbContext.Products
+                .Include(p => p.Id)
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task UpdateAsync(Product entity)
+        {
+            var trackedEntity = await _firstDbContext.Products.FindAsync(entity.Id);
             if (trackedEntity != null)
             {
-                _firstDbContext.Entry(trackedEntity).CurrentValues.SetValues(product);
+                _firstDbContext.Entry(trackedEntity).CurrentValues.SetValues(entity);
             }
             else
             {
-                _firstDbContext.Products.Update(product);
+                _firstDbContext.Products.Update(entity);
             }
             await _firstDbContext.SaveChangesAsync();
         }

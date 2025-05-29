@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Infrastructure.Data;
 using Core.Interfaces;
 using Infrastructure.Repositories;
+using Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +16,11 @@ builder.Services.AddDbContext<FirstDbContext>(options =>
 builder.Services.AddDbContext<SecondDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SecondDatabase")));
 
-// Register application services
+// Register repositories
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+// Register application services
+builder.Services.AddScoped<ProductService>();
 
 // Configure Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
