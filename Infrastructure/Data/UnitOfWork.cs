@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
-using Core.Entities;
+using System.Transactions;
+using Core.Attributes;
 using Core.Interfaces;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -13,29 +15,12 @@ namespace Infrastructure.Data
         private readonly FirstDbContext _firstDbContext;
         private readonly SecondDbContext _secondDbContext;
         private readonly Dictionary<Type, object> _repositories = new();
-        private readonly Dictionary<Type, DbContext> _entityDbContextMap;
         private bool _disposed = false;
-
-        // Optional: Inject ILogger<UnitOfWork> if you want to use logging
-        // private readonly ILogger<UnitOfWork> _logger;
-        // public UnitOfWork(FirstDbContext firstDbContext, SecondDbContext secondDbContext, ILogger<UnitOfWork> logger)
-        // {
-        //     _firstDbContext = firstDbContext;
-        //     _secondDbContext = secondDbContext;
-        //     _logger = logger;
-        //     ...
-        // }
 
         public UnitOfWork(FirstDbContext firstDbContext, SecondDbContext secondDbContext)
         {
             _firstDbContext = firstDbContext;
             _secondDbContext = secondDbContext;
-
-            _entityDbContextMap = new Dictionary<Type, DbContext>
-            {
-                { typeof(Product), _firstDbContext },
-                // เพิ่ม mapping อื่น ๆ ได้ที่นี่
-            };
         }
 
         public IGenericRepository<T> Repository<T>() where T : class
@@ -44,8 +29,16 @@ namespace Infrastructure.Data
             if (_repositories.ContainsKey(type))
                 return (IGenericRepository<T>)_repositories[type];
 
-            if (!_entityDbContextMap.TryGetValue(type, out var dbContext))
-                throw new NotSupportedException($"No DbContext mapping for type {type.Name}");
+            // อ่าน Attribute เพื่อเลือก DbContext
+            var attr = type.GetCustomAttributes(typeof(DbContextNameAttribute), false)
+                           .FirstOrDefault() as DbContextNameAttribute;
+
+            DbContext dbContext = attr?.Name switch
+            {
+                "FirstDbContext" => _firstDbContext,
+                "SecondDbContext" => _secondDbContext,
+                _ => throw new NotSupportedException($"No DbContext mapping for type {type.Name}")
+            };
 
             var repoInstance = new GenericRepository<T>(dbContext);
             _repositories[type] = repoInstance;
@@ -54,18 +47,24 @@ namespace Infrastructure.Data
 
         public async Task CommitAsync()
         {
-            try
+            // ใช้ TransactionScope เพื่อให้แน่ใจว่าการเปลี่ยนแปลงในทั้งสอง DbContext จะถูก Commit หรือ Rollback พร้อมกัน
+            // TransactionScopeAsyncFlowOption.Enabled ช่วยให้สามารถใช้ TransactionScope ใน async method ได้
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                await _firstDbContext.SaveChangesAsync();
-                await _secondDbContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                // Logging example (uncomment if using ILogger)
-                // _logger?.LogError(ex, "Error occurred during CommitAsync in UnitOfWork.");
-                // หรือใช้ Console.WriteLine ชั่วคราว
-                Console.WriteLine($"Error in CommitAsync: {ex.Message}");
-                throw;
+                try
+                {
+                    await _firstDbContext.SaveChangesAsync();
+                    await _secondDbContext.SaveChangesAsync();
+
+                    scope.Complete();
+                }
+                catch (Exception ex)
+                {
+                    // Logging example (uncomment if using ILogger)
+                    // _logger?.LogError(ex, "Error occurred during CommitAsync in UnitOfWork.");
+                    Console.WriteLine($"Error in CommitAsync: {ex.Message}");
+                    throw;
+                }
             }
         }
 
