@@ -24,7 +24,7 @@ namespace Infrastructure.Repositories
         {
             using (var connection = _dbContext.Database.GetDbConnection())
             {
-                var sql = "SELECT * FROM Products WHERE CategoryId = @CategoryId";
+                var sql = "SELECT * FROM Products WHERE Id = @CategoryId";
                 var products = await connection.QueryAsync<Product>(sql, new { CategoryId = id });
                 return products;
             }
