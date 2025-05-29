@@ -129,9 +129,9 @@ namespace ABC.API.Controllers
                 {
                     return NotFound();
                 }
-
-                var updatedProduct = _mapper.Map<Product>(updatedProductDto);
-                await _service.UpdateProductAsync(updatedProduct);
+                
+                _mapper.Map(updatedProductDto, existingProduct);
+                await _service.UpdateProductAsync(existingProduct);
                 return NoContent();
             }
             catch (Exception ex)
