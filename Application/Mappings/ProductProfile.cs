@@ -8,9 +8,9 @@ using Core.Entities;
 
 namespace Application.Mappings
 {
-    public class ProductProfile : Profile
+    public class MappingProfile : Profile
     {
-        public ProductProfile()
+        public MappingProfile()
         {
             CreateMap<Product, ProductDto>().ReverseMap();
         }

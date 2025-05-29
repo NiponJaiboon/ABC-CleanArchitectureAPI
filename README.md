@@ -17,3 +17,39 @@ dotnet ef database update --context FirstDbContext --startup-project API/API.csp
 ```sh
 dotnet run --project API/API.csproj
 ```
+
+<!-- โครงสร้างโปรเจกต์ (Project Structure) ที่เหมาะสมสำหรับ Clean Architecture -->
+NCBCleanArchitectureAPI/
+│
+├── API/
+│   ├── Controllers/
+│   │   └── ProductsController.cs
+│   └── Program.cs
+│
+├── Application/
+│   ├── Dtos/
+│   │   └── ProductDto.cs
+│   ├── Mappings/
+│   │   └── ProductProfile.cs
+│   └── Services/
+│       └── ProductService.cs
+│
+├── Core/
+│   ├── Entities/
+│   │   └── Product.cs
+│   └── Interfaces/
+│       ├── IGenericRepository.cs
+│       ├── IProductRepository.cs
+│       └── IUnitOfWork.cs
+│
+├── Infrastructure/
+│   ├── Data/
+│   │   ├── FirstDbContext.cs
+│   │   ├── SecondDbContext.cs
+│   │   └── UnitOfWork.cs
+│   └── Repositories/
+│       ├── GenericRepository.cs
+│       └── ProductRepository.cs
+│
+├── appsettings.json
+└── README.md
