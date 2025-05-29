@@ -21,83 +21,145 @@ namespace ABC.API.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<ProductDto>), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public async Task<ActionResult<List<ProductDto>>> Get()
         {
-            var products = await _service.GetAllProductsAsync();
-            var result = _mapper.Map<List<ProductDto>>(products);
-            if (result == null || !result.Any())
+            try
             {
-                return NotFound();
+                var products = await _service.GetAllProductsAsync();
+                var result = _mapper.Map<List<ProductDto>>(products);
+                if (result == null || !result.Any())
+                {
+                    return NotFound();
+                }
+                return Ok(result);
             }
-            return Ok(result);
+            catch (Exception ex)
+            {
+                // สามารถ log ex ได้ที่นี่
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(ProductDto), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
         public async Task<ActionResult<ProductDto>> AddProduct([FromBody] ProductDto productDto)
         {
-            if (productDto == null)
+            try
             {
-                return BadRequest();
-            }
+                if (productDto == null)
+                {
+                    return BadRequest();
+                }
 
-            var product = _mapper.Map<Product>(productDto);
-            await _service.AddProductAsync(product);
-            return Ok(_mapper.Map<ProductDto>(product));
+                var product = _mapper.Map<Product>(productDto);
+                await _service.AddProductAsync(product);
+                return Ok(_mapper.Map<ProductDto>(product));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> DeleteProductAsync(int id)
         {
-            var product = await _service.GetProductByIdAsync(id);
-            if (product == null)
+            try
             {
-                return NotFound();
-            }
+                var product = await _service.GetProductByIdAsync(id);
+                if (product == null)
+                {
+                    return NotFound();
+                }
 
-            await _service.DeleteProductAsync(id);
-            return NoContent();
+                await _service.DeleteProductAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
-
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ProductDto), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public async Task<ActionResult<ProductDto>> GetProductByIdAsync(int id)
         {
-            var product = await _service.GetProductByIdAsync(id);
-            if (product == null)
+            try
             {
-                return NotFound();
+                var product = await _service.GetProductByIdAsync(id);
+                if (product == null)
+                {
+                    return NotFound();
+                }
+                return Ok(_mapper.Map<ProductDto>(product));
             }
-            return Ok(_mapper.Map<ProductDto>(product));
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpPut("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> UpdateProductAsync(int id, [FromBody] ProductDto updatedProductDto)
         {
-            if (updatedProductDto == null || updatedProductDto.Id != id)
+            try
             {
-                return BadRequest();
-            }
+                if (updatedProductDto == null || updatedProductDto.Id != id)
+                {
+                    return BadRequest();
+                }
 
-            var existingProduct = await _service.GetProductByIdAsync(id);
-            if (existingProduct == null)
+                var existingProduct = await _service.GetProductByIdAsync(id);
+                if (existingProduct == null)
+                {
+                    return NotFound();
+                }
+
+                var updatedProduct = _mapper.Map<Product>(updatedProductDto);
+                await _service.UpdateProductAsync(updatedProduct);
+                return NoContent();
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
-
-            var updatedProduct = _mapper.Map<Product>(updatedProductDto);
-            await _service.UpdateProductAsync(updatedProduct);
-            return NoContent();
         }
 
         [HttpGet("category/{categoryId}")]
+        [ProducesResponseType(typeof(List<ProductDto>), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public async Task<ActionResult<List<ProductDto>>> GetProductsByCategoryAsync(int categoryId)
         {
-            var products = await _service.GetProductsByCategoryAsync(categoryId);
-            if (products == null || !products.Any())
+            try
             {
-                return NotFound();
+                var products = await _service.GetProductsByCategoryAsync(categoryId);
+                if (products == null || !products.Any())
+                {
+                    return NotFound();
+                }
+                var result = _mapper.Map<List<ProductDto>>(products);
+                return Ok(result);
             }
-            var result = _mapper.Map<List<ProductDto>>(products);
-            return Ok(result);
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }
