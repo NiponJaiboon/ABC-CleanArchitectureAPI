@@ -30,7 +30,7 @@ NCBCleanArchitectureAPI/
 │   ├── Dtos/
 │   │   └── ProductDto.cs
 │   ├── Mappings/
-│   │   └── ProductProfile.cs
+│   │   └── MappingProfile.cs
 │   └── Services/
 │       └── ProductService.cs
 │
