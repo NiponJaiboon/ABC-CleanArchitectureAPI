@@ -13,28 +13,26 @@ namespace Infrastructure.Repositories
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly FirstDbContext _firstDbContext;
-        private readonly SecondDbContext _secondDbContext;
+        private readonly FirstDbContext _dbContext;
 
-        public ProductRepository(FirstDbContext firstDbContext, SecondDbContext secondDbContext)
+        public ProductRepository(FirstDbContext firstDbContext)
         {
-            _firstDbContext = firstDbContext;
-            _secondDbContext = secondDbContext;
+            _dbContext = firstDbContext;
         }
 
         public async Task AddAsync(Product entity)
         {
-            var res = _firstDbContext.Products.Add(entity);
-            await _firstDbContext.SaveChangesAsync();
+            var res = _dbContext.Products.Add(entity);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
-            var product = await _firstDbContext.Products.FindAsync(id);
+            var product = await _dbContext.Products.FindAsync(id);
             if (product != null)
             {
-                _firstDbContext.Products.Remove(product);
-                await _firstDbContext.SaveChangesAsync();
+                _dbContext.Products.Remove(product);
+                await _dbContext.SaveChangesAsync();
             }
         }
 
@@ -42,7 +40,7 @@ namespace Infrastructure.Repositories
         {
             try
             {
-                using (var connection = _firstDbContext.Database.GetDbConnection())
+                using (var connection = _dbContext.Database.GetDbConnection())
                 {
                     await connection.OpenAsync();
                     var sql = "SELECT Id, Name, Description, Price, Stock, Remark FROM [ABC_DB].[dbo].[Products]";
@@ -59,35 +57,35 @@ namespace Infrastructure.Repositories
 
         public async Task<Product> GetByIdAsync(int id)
         {
-            return await _firstDbContext.Products.FindAsync(id);
+            return await _dbContext.Products.FindAsync(id);
         }
 
         public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(int id)
         {
-            return await _firstDbContext.Products
+            return await _dbContext.Products
                 .Where(p => p.Id == id)
                 .ToListAsync();
         }
 
         public async Task<Product> GetProductWithDetailsAsync(int id)
         {
-            return await _firstDbContext.Products
+            return await _dbContext.Products
                 .Include(p => p.Id)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task UpdateAsync(Product entity)
         {
-            var trackedEntity = await _firstDbContext.Products.FindAsync(entity.Id);
+            var trackedEntity = await _dbContext.Products.FindAsync(entity.Id);
             if (trackedEntity != null)
             {
-                _firstDbContext.Entry(trackedEntity).CurrentValues.SetValues(entity);
+                _dbContext.Entry(trackedEntity).CurrentValues.SetValues(entity);
             }
             else
             {
-                _firstDbContext.Products.Update(entity);
+                _dbContext.Products.Update(entity);
             }
-            await _firstDbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

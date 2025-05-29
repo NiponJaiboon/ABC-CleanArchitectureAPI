@@ -1,4 +1,6 @@
-﻿using Application.Services;
+﻿using Application.DTOs;
+using Application.Services;
+using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -10,29 +12,37 @@ namespace ABC.API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly ProductService _service;
+        private readonly IMapper _mapper;
 
-        public ProductsController(ProductService service)
+        public ProductsController(ProductService service, IMapper mapper)
         {
             _service = service;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Product>>> Get()
+        public async Task<ActionResult<List<ProductDto>>> Get()
         {
             var products = await _service.GetAllProductsAsync();
-            return Ok(products);
+            var result = _mapper.Map<List<ProductDto>>(products);
+            if (result == null || !result.Any())
+            {
+                return NotFound();
+            }
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Product>> AddProduct([FromBody] Product product)
+        public async Task<ActionResult<ProductDto>> AddProduct([FromBody] ProductDto productDto)
         {
-            if (product == null)
+            if (productDto == null)
             {
                 return BadRequest();
             }
 
+            var product = _mapper.Map<Product>(productDto);
             await _service.AddProductAsync(product);
-            return Ok(product);
+            return Ok(_mapper.Map<ProductDto>(product));
         }
 
         [HttpDelete("{id}")]
@@ -49,20 +59,20 @@ namespace ABC.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProductByIdAsync(int id)
+        public async Task<ActionResult<ProductDto>> GetProductByIdAsync(int id)
         {
             var product = await _service.GetProductByIdAsync(id);
             if (product == null)
             {
                 return NotFound();
             }
-            return Ok(product);
+            return Ok(_mapper.Map<ProductDto>(product));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProductAsync(int id, [FromBody] Product updatedProduct)
+        public async Task<IActionResult> UpdateProductAsync(int id, [FromBody] ProductDto updatedProductDto)
         {
-            if (updatedProduct == null || updatedProduct.Id != id)
+            if (updatedProductDto == null || updatedProductDto.Id != id)
             {
                 return BadRequest();
             }
@@ -73,6 +83,7 @@ namespace ABC.API.Controllers
                 return NotFound();
             }
 
+            var updatedProduct = _mapper.Map<Product>(updatedProductDto);
             await _service.UpdateProductAsync(updatedProduct);
             return NoContent();
         }

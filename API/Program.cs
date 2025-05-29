@@ -22,6 +22,9 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 // Register application services
 builder.Services.AddScoped<ProductService>();
 
+
+builder.Services.AddAutoMapper(typeof(Application.Mappings.ProductProfile).Assembly);
+
 // Configure Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
