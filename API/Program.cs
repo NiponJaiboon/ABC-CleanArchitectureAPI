@@ -4,6 +4,13 @@ using Infrastructure.Data;
 using Core.Interfaces;
 using Infrastructure.Repositories;
 using Application.Services;
+using Serilog;
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.File("Logs/Error/error-.txt", restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error, rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +40,9 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "ABC API", Version = "v1" });
 });
+
+// ใช้ Serilog กับ Host
+builder.Host.UseSerilog();
 
 // Build the app
 var app = builder.Build();

@@ -13,11 +13,13 @@ namespace ABC.API.Controllers
     {
         private readonly ProductService _service;
         private readonly IMapper _mapper;
+        private readonly ILogger<ProductsController> _logger;
 
-        public ProductsController(ProductService service, IMapper mapper)
+        public ProductsController(ProductService service, IMapper mapper, ILogger<ProductsController> logger)
         {
             _service = service;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -38,7 +40,7 @@ namespace ABC.API.Controllers
             }
             catch (Exception ex)
             {
-                // สามารถ log ex ได้ที่นี่
+                _logger.LogError(ex, "Error occurred in Get()");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -62,6 +64,7 @@ namespace ABC.API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred in AddProduct()");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -85,6 +88,7 @@ namespace ABC.API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred in DeleteProductAsync()");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -106,6 +110,7 @@ namespace ABC.API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred in GetProductByIdAsync()");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -129,13 +134,14 @@ namespace ABC.API.Controllers
                 {
                     return NotFound();
                 }
-                
+
                 _mapper.Map(updatedProductDto, existingProduct);
                 await _service.UpdateProductAsync(existingProduct);
                 return NoContent();
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred in UpdateProductAsync()");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -158,6 +164,7 @@ namespace ABC.API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred in GetProductsByCategoryAsync()");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
