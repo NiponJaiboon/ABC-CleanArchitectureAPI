@@ -16,6 +16,9 @@ builder.Services.AddDbContext<FirstDbContext>(options =>
 builder.Services.AddDbContext<SecondDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SecondDatabase")));
 
+// Register unit of work
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 // Register repositories
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 

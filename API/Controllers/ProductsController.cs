@@ -58,7 +58,7 @@ namespace ABC.API.Controllers
             return NoContent();
         }
 
-        [HttpGet("{id}")]
+
         public async Task<ActionResult<ProductDto>> GetProductByIdAsync(int id)
         {
             var product = await _service.GetProductByIdAsync(id);
@@ -86,6 +86,18 @@ namespace ABC.API.Controllers
             var updatedProduct = _mapper.Map<Product>(updatedProductDto);
             await _service.UpdateProductAsync(updatedProduct);
             return NoContent();
+        }
+
+        [HttpGet("category/{categoryId}")]
+        public async Task<ActionResult<List<ProductDto>>> GetProductsByCategoryAsync(int categoryId)
+        {
+            var products = await _service.GetProductsByCategoryAsync(categoryId);
+            if (products == null || !products.Any())
+            {
+                return NotFound();
+            }
+            var result = _mapper.Map<List<ProductDto>>(products);
+            return Ok(result);
         }
     }
 }

@@ -6,20 +6,22 @@ namespace Application.Services
     public class ProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(IProductRepository productRepository, IUnitOfWork unitOfWork)
         {
             _productRepository = productRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            return await _productRepository.GetAllAsync();
+            return await _unitOfWork.Repository<Product>().GetAllAsync();
         }
 
         public async Task<Product> GetProductByIdAsync(int id)
         {
-            return await _productRepository.GetByIdAsync(id);
+            return await _unitOfWork.Repository<Product>().GetByIdAsync(id);
         }
 
         public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(int categoryId)
@@ -29,17 +31,20 @@ namespace Application.Services
 
         public async Task AddProductAsync(Product product)
         {
-            await _productRepository.AddAsync(product);
+            await _unitOfWork.Repository<Product>().AddAsync(product);
+            await _unitOfWork.CommitAsync();
         }
 
         public async Task UpdateProductAsync(Product product)
         {
-            await _productRepository.UpdateAsync(product);
+            await _unitOfWork.Repository<Product>().UpdateAsync(product);
+            await _unitOfWork.CommitAsync();
         }
 
         public async Task DeleteProductAsync(int id)
         {
-            await _productRepository.DeleteAsync(id);
+            await _unitOfWork.Repository<Product>().DeleteAsync(id);
+            await _unitOfWork.CommitAsync();
         }
     }
 }

@@ -16,6 +16,3 @@ namespace Core.Entities
         public string Remark { get; set; }
     }
 }
-// dotnet ef migrations add AddRemark --project Infrastructure/Infrastructure.csproj --startup-project API/API.csproj --context FirstDbContext
-// dotnet ef migrations add AddRemark --context FirstDbContext --startup-project ../API/ABC.API.csproj
-// dotnet ef database update  --context FirstDbContext --startup-project ../API/ABC.API.csproj
