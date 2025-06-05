@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(FirstDbContext))]
-    [Migration("20250526085039_AddRemark")]
-    partial class AddRemark
+    [Migration("20250605050439_UpdateIdentitySchema")]
+    partial class UpdateIdentitySchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

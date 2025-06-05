@@ -482,3 +482,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Duende IdentityServer ใช้สำหรับเซ็น (sign) JWT token
+API/keys/*

@@ -13,6 +13,11 @@ namespace Application.Mappings
         public MappingProfile()
         {
             CreateMap<Product, ProductDto>().ReverseMap();
+            
+            CreateMap<RegisterDto, ApplicationUser>()
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Username))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
         }
     }
 }

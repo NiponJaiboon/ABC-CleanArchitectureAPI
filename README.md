@@ -10,6 +10,18 @@
 ```sh
 dotnet ef migrations add <MigrationName> --project Infrastructure/Infrastructure.csproj --startup-project API/API.csproj --context FirstDbContext
 dotnet ef database update --context FirstDbContext --startup-project API/API.csproj
+
+dotnet ef migrations add AddOpenIddictEntities --context FirstDbContext --startup-project ../API/ABC.API.csproj
+dotnet ef migrations remove --context FirstDbContext --startup-project ../API/ABC.API.csproj
+dotnet ef  database update --context FirstDbContext --startup-project ../API/ABC.API.csproj
+dotnet ef  database drop --context FirstDbContext --startup-project ../API/ABC.API.csproj
+
+dotnet ef migrations add UpdateIdentity --context ApplicationDbContext --startup-project ../API/ABC.API.csproj
+dotnet ef migrations remove  --startup-project API/API.csproj --context FirstDbContext
+
+dotnet ef database update --context ApplicationDbContext --startup-project ../API/ABC.API.csproj
+
+dotnet ef database drop --project Infrastructure/Infrastructure.csproj --startup-project API/API.csproj --context ApplicationDbContext
 ```
 
 ## การรันโปรเจกต์
@@ -19,6 +31,9 @@ dotnet run --project API/API.csproj
 ```
 
 <!-- โครงสร้างโปรเจกต์ (Project Structure) ที่เหมาะสมสำหรับ Clean Architecture -->
+## โครงสร้างโปรเจกต์ (Project Structure)
+
+```
 NCBCleanArchitectureAPI/
 │
 ├── API/
@@ -53,3 +68,4 @@ NCBCleanArchitectureAPI/
 │
 ├── appsettings.json
 └── README.md
+```
