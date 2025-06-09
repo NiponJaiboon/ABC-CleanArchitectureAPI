@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -20,13 +21,22 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Configure database contexts
+//// Configure Entity Framework Core with SQL Server
+// builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// builder.Services.AddDbContext<FirstDbContext>(options =>
+//     options.UseSqlServer(builder.Configuration.GetConnectionString("FirstDatabase")));
+// builder.Services.AddDbContext<SecondDbContext>(options =>
+//     options.UseSqlServer(builder.Configuration.GetConnectionString("SecondDatabase")));
+
+// Configure Entity Framework Core with PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddDbContext<FirstDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("FirstDatabase")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("FirstDatabase")));
 builder.Services.AddDbContext<SecondDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SecondDatabase")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("SecondDatabase")));
+
 
 
 
@@ -66,6 +76,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 builder.Services.AddIdentityServer(options =>
 {
     options.EmitStaticAudienceClaim = true;
+    options.KeyManagement.Enabled = true; // <--- ปิด Automatic Key Management ที่นี่
 })
 .AddAspNetIdentity<ApplicationUser>() // ใช้ IdentityUser สำหรับการจัดการผู้ใช้
 .AddInMemoryClients(Config.Clients)

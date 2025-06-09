@@ -11,18 +11,15 @@
 dotnet ef migrations add <MigrationName> --project Infrastructure/Infrastructure.csproj --startup-project API/API.csproj --context FirstDbContext
 dotnet ef database update --context FirstDbContext --startup-project API/API.csproj
 
-dotnet ef migrations add AddOpenIddictEntities --context FirstDbContext --startup-project ../API/ABC.API.csproj
-dotnet ef migrations remove --context FirstDbContext --startup-project ../API/ABC.API.csproj
-dotnet ef  database update --context FirstDbContext --startup-project ../API/ABC.API.csproj
-dotnet ef  database drop --context FirstDbContext --startup-project ../API/ABC.API.csproj
-
-dotnet ef migrations add UpdateIdentity --context ApplicationDbContext --startup-project ../API/ABC.API.csproj
-dotnet ef migrations remove  --startup-project API/API.csproj --context FirstDbContext
+dotnet ef migrations add UpdateIdentityPostgreSQL  --context ApplicationDbContext --startup-project ../API/ABC.API.csproj
+dotnet ef migrations add FirstDbContextPostgreSQL  --context FirstDbContext --startup-project ../API/ABC.API.csproj
+dotnet ef migrations add SecondDatabaseDb  --context SecondDbContext --startup-project ../API/ABC.API.csproj
 
 dotnet ef database update --context ApplicationDbContext --startup-project ../API/ABC.API.csproj
+dotnet ef database update --context FirstDbContext --startup-project ../API/ABC.API.csproj
+dotnet ef database update --context SecondDbContext --startup-project ../API/ABC.API.csproj
 
-dotnet ef database drop --project Infrastructure/Infrastructure.csproj --startup-project API/API.csproj --context ApplicationDbContext
-```
+
 
 ## การรันโปรเจกต์
 

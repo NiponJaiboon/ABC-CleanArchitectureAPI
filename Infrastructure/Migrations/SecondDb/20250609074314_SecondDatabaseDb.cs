@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace Infrastructure.Migrations.ApplicationDb
+namespace Infrastructure.Migrations.SecondDb
 {
     /// <inheritdoc />
-    public partial class UpdateIden : Migration
+    public partial class SecondDatabaseDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
