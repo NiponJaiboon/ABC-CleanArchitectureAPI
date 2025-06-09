@@ -19,6 +19,10 @@ dotnet ef database update --context ApplicationDbContext --startup-project ../AP
 dotnet ef database update --context FirstDbContext --startup-project ../API/ABC.API.csproj
 dotnet ef database update --context SecondDbContext --startup-project ../API/ABC.API.csproj
 
+sudo dotnet ef database update --context ApplicationDbContext --startup-project /Users/nevelopdevper/iDev/ABC-CleanArchitecture/API/ABC.API.csproj
+sudo dotnet ef database update --context FirstDbContext --startup-project /Users/nevelopdevper/iDev/ABC-CleanArchitecture/API/ABC.API.csproj
+sudo dotnet ef database update --context SecondDbContext --startup-project /Users/nevelopdevper/iDev/ABC-CleanArchitecture/API/ABC.API.csproj
+
 
 
 ## การรันโปรเจกต์

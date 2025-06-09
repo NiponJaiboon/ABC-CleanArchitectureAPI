@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
+using Microsoft.AspNetCore.DataProtection;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -70,6 +71,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
+
+// var cert = new X509Certificate2("path-to-your-certificate.pfx", "your-password");
+// builder.Services.AddDataProtection()
+//     .ProtectKeysWithCertificate(cert);
 
 builder.Services.AddIdentityServer(options =>
 {

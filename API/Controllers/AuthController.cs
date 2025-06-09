@@ -31,13 +31,15 @@ namespace API.Controllers
             var tokenResponse = await _authService.LoginAsync(loginDto);
             if (tokenResponse.IsError)
                 return Unauthorized(new { message = tokenResponse.Error });
-            return Ok(new
-            {
-                access_token = tokenResponse.AccessToken,
-                expires_in = tokenResponse.ExpiresIn,
-                token_type = tokenResponse.TokenType,
-                scope = tokenResponse.Scope
-            });
+            return Ok(
+                new
+                {
+                    access_token = tokenResponse.AccessToken,
+                    expires_in = tokenResponse.ExpiresIn,
+                    token_type = tokenResponse.TokenType,
+                    scope = tokenResponse.Scope,
+                }
+            );
         }
 
         [HttpPost("logout")]
@@ -62,13 +64,15 @@ namespace API.Controllers
             var tokenResponse = await _authService.RefreshTokenAsync(dto);
             if (tokenResponse.IsError)
                 return BadRequest(new { message = tokenResponse.Error });
-            return Ok(new
-            {
-                access_token = tokenResponse.AccessToken,
-                expires_in = tokenResponse.ExpiresIn,
-                token_type = tokenResponse.TokenType,
-                scope = tokenResponse.Scope
-            });
+            return Ok(
+                new
+                {
+                    access_token = tokenResponse.AccessToken,
+                    expires_in = tokenResponse.ExpiresIn,
+                    token_type = tokenResponse.TokenType,
+                    scope = tokenResponse.Scope,
+                }
+            );
         }
 
         [HttpPost("forgot-password")]
@@ -84,7 +88,8 @@ namespace API.Controllers
         {
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             var result = await _authService.ChangePasswordAsync(userId, dto);
-            if (result.Succeeded) return Ok(new { message = "Password changed" });
+            if (result.Succeeded)
+                return Ok(new { message = "Password changed" });
             return BadRequest(result.Errors);
         }
 
@@ -95,6 +100,23 @@ namespace API.Controllers
             // สมมติว่ามี GetMeAsync ใน IAuthService
             var userInfo = await _authService.GetMeAsync(User);
             return Ok(userInfo);
+        }
+
+        [HttpPost("external-login")]
+        public async Task<IActionResult> ExternalLogin([FromBody] ExternalLoginDto externalLoginDto)
+        {
+            var loginResponse = await _authService.ExternalLoginAsync(externalLoginDto);
+            if (loginResponse.IsError)
+                return BadRequest(new { message = loginResponse.Error });
+            return Ok(
+                new
+                {
+                    access_token = loginResponse.AccessToken,
+                    expires_in = loginResponse.ExpiresIn,
+                    token_type = loginResponse.TokenType,
+                    scope = loginResponse.Scope,
+                }
+            );
         }
     }
 }
