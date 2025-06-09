@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Application.DTOs;
 using AutoMapper;
 using Core.Entities;
+using Shared.DTOs;
 
 namespace Application.Mappings
 {

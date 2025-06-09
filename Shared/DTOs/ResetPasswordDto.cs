@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Application.DTOs
+namespace Shared.DTOs
 {
-    public class RevokeTokenDto
+    public class ResetPasswordDto
     {
+        public string Email { get; set; }
         public string Token { get; set; }
-        public string TokenType { get; set; } // "refresh_token" หรือ "access_token"
+        public string NewPassword { get; set; }
     }
 }
