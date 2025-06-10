@@ -5,9 +5,8 @@ namespace Infrastructure.Data
 {
     public class FirstDbContext : DbContext
     {
-        public FirstDbContext(DbContextOptions<FirstDbContext> options) : base(options)
-        {
-        }
+        public FirstDbContext(DbContextOptions<FirstDbContext> options)
+            : base(options) { }
 
         public DbSet<Product> Products { get; set; }
 

@@ -23,21 +23,23 @@ namespace Infrastructure.Data
             _secondDbContext = secondDbContext;
         }
 
-        public IGenericRepository<T> Repository<T>() where T : class
+        public IGenericRepository<T> Repository<T>()
+            where T : class
         {
             var type = typeof(T);
             if (_repositories.ContainsKey(type))
                 return (IGenericRepository<T>)_repositories[type];
 
             // อ่าน Attribute เพื่อเลือก DbContext
-            var attr = type.GetCustomAttributes(typeof(DbContextNameAttribute), false)
-                           .FirstOrDefault() as DbContextNameAttribute;
+            var attr =
+                type.GetCustomAttributes(typeof(DbContextNameAttribute), false).FirstOrDefault()
+                as DbContextNameAttribute;
 
             DbContext dbContext = attr?.Name switch
             {
                 "FirstDbContext" => _firstDbContext,
                 "SecondDbContext" => _secondDbContext,
-                _ => throw new NotSupportedException($"No DbContext mapping for type {type.Name}")
+                _ => throw new NotSupportedException($"No DbContext mapping for type {type.Name}"),
             };
 
             var repoInstance = new GenericRepository<T>(dbContext);
