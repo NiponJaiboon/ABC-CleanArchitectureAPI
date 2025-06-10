@@ -9,5 +9,6 @@ namespace Shared.DTOs
     {
         public string Token { get; set; }
         public string TokenType { get; set; } // "refresh_token" หรือ "access_token"
+        public string Username { get; set; } // Add this line if you want to pass username
     }
 }

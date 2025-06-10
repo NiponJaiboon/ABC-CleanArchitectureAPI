@@ -15,7 +15,11 @@ namespace ABC.API.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<ProductsController> _logger;
 
-        public ProductsController(ProductService service, IMapper mapper, ILogger<ProductsController> logger)
+        public ProductsController(
+            ProductService service,
+            IMapper mapper,
+            ILogger<ProductsController> logger
+        )
         {
             _service = service;
             _mapper = mapper;
@@ -120,7 +124,10 @@ namespace ABC.API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> UpdateProductAsync(int id, [FromBody] ProductDto updatedProductDto)
+        public async Task<IActionResult> UpdateProductAsync(
+            int id,
+            [FromBody] ProductDto updatedProductDto
+        )
         {
             try
             {

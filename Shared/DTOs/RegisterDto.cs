@@ -16,5 +16,6 @@ namespace Shared.DTOs
 
         [Required, MinLength(6)]
         public string Password { get; set; }
+        public string Role { get; set; } // เพิ่ม field นี้ถ้าต้องการให้เลือก role ตอนสมัคร
     }
 }
