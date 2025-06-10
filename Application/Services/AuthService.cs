@@ -19,18 +19,27 @@ namespace Application.Services
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IConfiguration _configuration;
 
-        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+        public AuthService(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IConfiguration configuration
+        )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
         }
+
         public async Task<IdentityResult> ChangePasswordAsync(string userId, ChangePasswordDto dto)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
                 throw new UnauthorizedAccessException("User not found");
-            return await _userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
+            return await _userManager.ChangePasswordAsync(
+                user,
+                dto.CurrentPassword,
+                dto.NewPassword
+            );
         }
 
         public async Task<string> ForgotPasswordAsync(ForgotPasswordDto dto)
@@ -52,7 +61,9 @@ namespace Application.Services
                 throw new UnauthorizedAccessException("Invalid username or password");
             }
 
-            var result = _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, lockoutOnFailure: true).Result;
+            var result = _signInManager
+                .CheckPasswordSignInAsync(user, loginDto.Password, lockoutOnFailure: true)
+                .Result;
 
             if (!result.Succeeded)
             {
@@ -63,14 +74,16 @@ namespace Application.Services
             using var httpClient = new HttpClient();
             var discoveryDocument = httpClient.GetDiscoveryDocumentAsync(authority).Result;
 
-            return await httpClient.RequestPasswordTokenAsync(new PasswordTokenRequest
-            {
-                Address = discoveryDocument.TokenEndpoint,
-                ClientId = "my-client",
-                ClientSecret = "secret",
-                UserName = loginDto.Username,
-                Password = loginDto.Password
-            });
+            return await httpClient.RequestPasswordTokenAsync(
+                new PasswordTokenRequest
+                {
+                    Address = discoveryDocument.TokenEndpoint,
+                    ClientId = "my-client",
+                    ClientSecret = "secret",
+                    UserName = loginDto.Username,
+                    Password = loginDto.Password,
+                }
+            );
         }
 
         public async Task LogoutAsync()
@@ -84,13 +97,15 @@ namespace Application.Services
             using var httpClient = new HttpClient();
             var discoveryDocument = await httpClient.GetDiscoveryDocumentAsync(authority);
 
-            return await httpClient.RequestRefreshTokenAsync(new RefreshTokenRequest
-            {
-                Address = discoveryDocument.TokenEndpoint,
-                ClientId = "my-client",
-                ClientSecret = "secret",
-                RefreshToken = dto.RefreshToken
-            });
+            return await httpClient.RequestRefreshTokenAsync(
+                new RefreshTokenRequest
+                {
+                    Address = discoveryDocument.TokenEndpoint,
+                    ClientId = "my-client",
+                    ClientSecret = "secret",
+                    RefreshToken = dto.RefreshToken,
+                }
+            );
         }
 
         public async Task<IdentityResult> RegisterAsync(RegisterDto registerDto)
@@ -98,9 +113,15 @@ namespace Application.Services
             var user = new ApplicationUser
             {
                 UserName = registerDto.Username,
-                Email = registerDto.Email
+                Email = registerDto.Email,
             };
-            return await _userManager.CreateAsync(user, registerDto.Password);
+            var result = await _userManager.CreateAsync(user, registerDto.Password);
+            if (result.Succeeded)
+            {
+                var role = string.IsNullOrEmpty(registerDto.Role) ? "User" : registerDto.Role;
+                await _userManager.AddToRoleAsync(user, role);
+            }
+            return result;
         }
 
         public async Task<TokenRevocationResponse> RevokeTokenAsync(RevokeTokenDto dto)
@@ -109,26 +130,29 @@ namespace Application.Services
             using var httpClient = new HttpClient();
             var discoveryDocument = await httpClient.GetDiscoveryDocumentAsync(authority);
 
-            return await httpClient.RevokeTokenAsync(new TokenRevocationRequest
-            {
-                Address = discoveryDocument.RevocationEndpoint,
-                ClientId = "my-client",
-                ClientSecret = "secret",
-                Token = dto.Token
-            });
+            return await httpClient.RevokeTokenAsync(
+                new TokenRevocationRequest
+                {
+                    Address = discoveryDocument.RevocationEndpoint,
+                    ClientId = "my-client",
+                    ClientSecret = "secret",
+                    Token = dto.Token,
+                }
+            );
         }
 
         public async Task<UserInfoDto> GetMeAsync(ClaimsPrincipal user)
         {
             var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var appUser = await _userManager.FindByIdAsync(userId);
-            if (appUser == null) return null;
+            if (appUser == null)
+                return null;
 
             return new UserInfoDto
             {
                 Id = appUser.Id,
                 UserName = appUser.UserName,
-                Email = appUser.Email
+                Email = appUser.Email,
                 // Add other properties as needed
             };
         }
@@ -136,7 +160,8 @@ namespace Application.Services
         public async Task<IdentityResult> ResetPasswordAsync(ResetPasswordDto dto)
         {
             var user = await _userManager.FindByEmailAsync(dto.Email);
-            if (user == null) return IdentityResult.Failed(new IdentityError { Description = "User not found" });
+            if (user == null)
+                return IdentityResult.Failed(new IdentityError { Description = "User not found" });
 
             var result = await _userManager.ResetPasswordAsync(user, dto.Token, dto.NewPassword);
             return result;
@@ -154,7 +179,9 @@ namespace Application.Services
             if (dto.Provider == "Google")
             {
                 // ตรวจสอบ Google IdToken
-                var payload = await Google.Apis.Auth.GoogleJsonWebSignature.ValidateAsync(dto.IdToken);
+                var payload = await Google.Apis.Auth.GoogleJsonWebSignature.ValidateAsync(
+                    dto.IdToken
+                );
                 email = payload.Email;
                 providerUserId = payload.Subject;
             }
@@ -187,14 +214,16 @@ namespace Application.Services
             using var httpClient = new HttpClient();
             var discoveryDocument = await httpClient.GetDiscoveryDocumentAsync(authority);
 
-            return await httpClient.RequestPasswordTokenAsync(new PasswordTokenRequest
-            {
-                Address = discoveryDocument.TokenEndpoint,
-                ClientId = "my-client",
-                ClientSecret = "secret",
-                UserName = user.UserName,
-                Password = null // หรือ generate password เฉพาะสำหรับ external
-            });
+            return await httpClient.RequestPasswordTokenAsync(
+                new PasswordTokenRequest
+                {
+                    Address = discoveryDocument.TokenEndpoint,
+                    ClientId = "my-client",
+                    ClientSecret = "secret",
+                    UserName = user.UserName,
+                    Password = null, // หรือ generate password เฉพาะสำหรับ external
+                }
+            );
         }
     }
 }
