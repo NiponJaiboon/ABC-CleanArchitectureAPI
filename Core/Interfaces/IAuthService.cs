@@ -38,7 +38,7 @@ namespace Core.Interfaces
         // ดึงข้อมูล user ปัจจุบัน
         Task<UserInfoDto> GetMeAsync(ClaimsPrincipal user);
         Task<TokenResponse> ExternalLoginAsync(ExternalLoginDto dto);
+        Task<ProfileDto> GetProfileAsync(string userId);
+        Task<bool> EditProfileAsync(string userId, EditProfileDto dto);
     }
-
-
 }

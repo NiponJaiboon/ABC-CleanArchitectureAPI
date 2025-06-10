@@ -225,5 +225,54 @@ namespace Application.Services
                 }
             );
         }
+
+        public async Task<ProfileDto> GetProfileAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return null;
+
+            // สามารถดึงข้อมูลเพิ่มเติมได้ตามต้องการ เช่น Role, Profile Picture, ฯลฯ
+            var roles = await _userManager.GetRolesAsync(user);
+            var phoneNumber = user.PhoneNumber ?? string.Empty;
+
+            // แต่ในที่นี้จะดึงแค่ข้อมูลพื้นฐาน
+            if (user == null)
+                return null;
+            if (string.IsNullOrEmpty(user.Email))
+                throw new UnauthorizedAccessException("User not found or email is empty");
+            if (string.IsNullOrEmpty(user.UserName))
+                throw new UnauthorizedAccessException("User not found or username is empty");
+
+            return new ProfileDto
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Email = user.Email,
+                Role = roles.FirstOrDefault() ?? "User",
+                PhoneNumber = phoneNumber,
+            };
+        }
+
+        public async Task<bool> EditProfileAsync(string userId, EditProfileDto dto)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return false;
+
+            user.Email = dto.Email;
+            user.PhoneNumber = dto.PhoneNumber;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!string.IsNullOrEmpty(dto.Role))
+            {
+                var currentRoles = await _userManager.GetRolesAsync(user);
+                await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                await _userManager.AddToRoleAsync(user, dto.Role);
+            }
+
+            return result.Succeeded;
+        }
     }
 }
