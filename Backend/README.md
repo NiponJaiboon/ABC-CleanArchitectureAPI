@@ -107,7 +107,7 @@ NCBCleanArchitectureAPI/
    สำหรับระบบองค์กรหรือ production ควรมีฟีเจอร์ด้านความปลอดภัยครบถ้วน
 
 VERIFY SIGNATURE ของ JWT token ใน https://jwt.io/
-https://localhost:7256/.well-known/openid-configuration/jwks
+https://localhost:5001/.well-known/openid-configuration/jwks
 Capy All
 แปลง JWK เป็น PEM (RSA Public Key) สำหรับ jwt.io
 ไปที่ https://8gwifi.org/jwkconvertfunctions.jsp
