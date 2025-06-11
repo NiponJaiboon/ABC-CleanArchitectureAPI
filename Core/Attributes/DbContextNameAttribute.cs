@@ -9,6 +9,7 @@ namespace Core.Attributes
     public class DbContextNameAttribute : Attribute
     {
         public string Name { get; }
+
         public DbContextNameAttribute(string name) => Name = name;
     }
 }

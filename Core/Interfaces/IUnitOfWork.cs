@@ -4,7 +4,8 @@ namespace Core.Interfaces
 {
     public interface IUnitOfWork
     {
-        IGenericRepository<T> Repository<T>() where T : class;
+        IGenericRepository<T> Repository<T>()
+            where T : class;
         Task CommitAsync();
     }
 }

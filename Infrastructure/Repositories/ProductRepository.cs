@@ -19,7 +19,7 @@ namespace Infrastructure.Repositories
         {
             _dbContext = firstDbContext;
         }
-      
+
         public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(int id)
         {
             using (var connection = _dbContext.Database.GetDbConnection())
@@ -35,10 +35,12 @@ namespace Infrastructure.Repositories
             using (var connection = _dbContext.Database.GetDbConnection())
             {
                 var sql = "SELECT * FROM Products WHERE Id = @Id";
-                var product = await connection.QueryFirstOrDefaultAsync<Product>(sql, new { Id = id });
+                var product = await connection.QueryFirstOrDefaultAsync<Product>(
+                    sql,
+                    new { Id = id }
+                );
                 return product;
             }
         }
-       
     }
 }

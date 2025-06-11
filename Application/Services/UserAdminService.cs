@@ -61,15 +61,24 @@ namespace Application.Services
 
             var users = await usersQuery.ToListAsync();
 
-            // Map ApplicationUser to UserInfoDto
-            var userDtos = users.Select(u => new UserInfoDto
+            var userDtos = new List<UserInfoDto>();
+            foreach (var u in users)
             {
-                Id = u.Id,
-                UserName = u.UserName,
-                Email = u.Email,
-                // Map other properties as needed
-            });
-
+                var roles = await _userManager.GetRolesAsync(u);
+                userDtos.Add(
+                    new UserInfoDto
+                    {
+                        Id = u.Id,
+                        UserName = u.UserName,
+                        Email = u.Email,
+                        IsActive =
+                            !u.LockoutEnabled
+                            || u.LockoutEnd == null
+                            || u.LockoutEnd < DateTimeOffset.Now,
+                        Role = roles.FirstOrDefault(),
+                    }
+                );
+            }
             return userDtos;
         }
 
@@ -82,8 +91,13 @@ namespace Application.Services
             return new UserInfoDto
             {
                 Id = user.Id,
-                UserName = user.UserName,
+                UserName = user.UserName, // ใช้ Username (n เล็ก) ให้ตรงกับ DTO
                 Email = user.Email,
+                Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault(),
+                IsActive =
+                    !user.LockoutEnabled
+                    || user.LockoutEnd == null
+                    || user.LockoutEnd < DateTimeOffset.Now,
                 // Map other properties as needed
             };
         }
