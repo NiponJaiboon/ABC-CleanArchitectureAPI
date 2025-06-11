@@ -76,6 +76,19 @@ namespace API.Extensions
                     options.RequireHttpsMetadata = true;
                 });
 
+            // IdentityServer
+            services.AddCors(options =>
+            {
+                options.AddPolicy(
+                    "AllowFrontend",
+                    policy =>
+                        policy
+                            .WithOrigins("http://localhost:3000")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                );
+            });
+
             return services;
         }
     }

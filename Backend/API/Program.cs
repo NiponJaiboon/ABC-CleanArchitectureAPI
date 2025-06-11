@@ -36,6 +36,7 @@ app.Services.SeedIdentityServerAndRoles(); // SeedDataExtensions
 app.UseCustomMiddlewares(); // MiddlewareExtensions
 
 app.UseHttpsRedirection();
+app.UseCors("AllowFrontend");
 app.UseIdentityServer();
 app.UseAuthentication(); // << ต้องมาก่อน UseAuthorization
 app.UseAuthorization();
