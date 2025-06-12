@@ -125,3 +125,62 @@ QIDAQAB
 -----END PUBLIC KEY-----
 นำ Public Key (PEM) ไปวางในช่อง "Public Key or Certificate" ของ jwt.io
 jwt.io จะทำการ verify signature ให้ทันที
+
+แนวทางที่แนะนำ (Best Practice)
+
+1.  Backend (ASP.NET Core)
+    Login:
+    -ส่ง access token (และ refresh token ถ้ามี) กลับใน response body เท่านั้น
+    -ไม่ต้อง set cookie ใดๆ
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+    {
+    var tokenResponse = await \_authService.LoginAsync(loginDto);
+    if (tokenResponse.IsError)
+    return Unauthorized(new { message = "Authentication failed" });
+
+        return Ok(new {
+            access_token = tokenResponse.AccessToken,
+            expires_in = tokenResponse.ExpiresIn,
+            token_type = tokenResponse.TokenType,
+            scope = tokenResponse.Scope
+        });
+
+    }
+
+API ที่ต้องการ auth:
+-ใช้ [Authorize] ตามปกติ
+-.NET จะอ่าน JWT จาก Authorization header อัตโนมัติ
+
+2. Frontend (React/Next.js/SPA)
+   หลัง login:
+   -รับ access token จาก response body
+   -เก็บไว้ใน memory (ปลอดภัยสุด) หรือ localStorage (ถ้าเน้น UX)
+   ทุก request ที่ต้องการ auth:
+   ส่ง header:
+   headers: { Authorization: `Bearer ${token}` }
+   ตัวอย่างการเรียก API:const token = localStorage.getItem("token");
+   const res = await fetch(`${API_URL}/api/Profile`, {
+   method: 'GET',
+   headers: {
+   'Content-Type': 'application/json',
+   'Authorization': `Bearer ${token}`
+   }
+   });
+
+3. (Optional) Refresh Token
+   ถ้าต้องการ UX ดีขึ้น (refresh หน้าไม่ต้อง login ใหม่)
+   ใช้ refresh token (เก็บใน HttpOnly cookie หรือ localStorage)
+   เขียน logic ให้ frontend ขอ access token ใหม่เมื่อหมดอายุ
+
+4. ข้อดีของแนวทางนี้
+   ปลอดภัย (ถ้าไม่เก็บ token ใน localStorage หรือป้องกัน XSS ดี)
+   เป็นมาตรฐาน REST API
+   รองรับทุก client (web, mobile, 3rd party)
+   ไม่ต้อง custom middleware ฝั่ง backend
+
+สรุปแนวทาง
+   Backend: ส่ง JWT ใน response body, ไม่ set cookie
+   Frontend: เก็บ token เอง, ส่งใน Authorization header ทุก request
+   ไม่ต้องใช้ cookie สำหรับ access token
