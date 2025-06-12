@@ -86,6 +86,7 @@ namespace API.Extensions
                             .WithOrigins("http://localhost:3000")
                             .AllowAnyHeader()
                             .AllowAnyMethod()
+                            .AllowCredentials() // อนุญาตให้ส่งคุกกี้
                 );
             });
 

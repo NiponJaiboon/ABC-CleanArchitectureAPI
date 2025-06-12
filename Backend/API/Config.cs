@@ -16,6 +16,7 @@ namespace API
                 {
                     ClientId = "my-client",
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    AccessTokenLifetime = 1800, // อายุของ access token (วินาที) = 30 นาที
                     ClientSecrets = { new Secret("secret".Sha256()) },
                     // Added openid and profile scopes
                     AllowedScopes = { "api1", "openid", "profile", "email" },

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { login } from "@/lib/api"; // ปรับ path ให้ตรงกับโครงสร้างของคุณ
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -13,17 +14,10 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("https://localhost:5001/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-      if (!res.ok) throw new Error("Login failed");
-      const data = await res.json();
-
+      const data = await login(username, password); // เรียกใช้ login จาก api.ts
       console.log("Login successful:", data);
-      // ตัวอย่าง: save token ลง localStorage
-      localStorage.setItem("token", data.access_token);
+      // ถ้าใช้ HttpOnly cookie ไม่ต้องเก็บ token ใน localStorage
+      // localStorage.setItem("token", data.access_token);
       // TODO: redirect ไปหน้าอื่น
     } catch {
       setError("เข้าสู่ระบบไม่สำเร็จ");

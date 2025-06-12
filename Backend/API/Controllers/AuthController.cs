@@ -64,31 +64,20 @@ namespace API.Controllers
                 }
                 if (!string.IsNullOrEmpty(tokenResponse.AccessToken))
                 {
-                    var userId = User.FindFirst(
-                        System.Security.Claims.ClaimTypes.NameIdentifier
-                    )?.Value;
-                    _logger.LogInformation("User {UserId} logged in successfully", userId);
-                    _logger.LogInformation(
-                        "Access token: {AccessToken}",
-                        tokenResponse.AccessToken
+                    Response.Cookies.Append(
+                        "access_token",
+                        tokenResponse.AccessToken,
+                        new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = true, // ใช้ true ใน production
+                            SameSite = SameSiteMode.Strict, // หรือ Lax ตามความเหมาะสม
+                            Expires = DateTimeOffset.UtcNow.AddSeconds(tokenResponse.ExpiresIn),
+                        }
                     );
-                    _logger.LogInformation(
-                        "Token expires in: {ExpiresIn} seconds",
-                        tokenResponse.ExpiresIn
-                    );
-                    _logger.LogInformation("Token type: {TokenType}", tokenResponse.TokenType);
-                    _logger.LogInformation("Token scope: {Scope}", tokenResponse.Scope);
                 }
-
-                return Ok(
-                    new
-                    {
-                        access_token = tokenResponse.AccessToken,
-                        expires_in = tokenResponse.ExpiresIn,
-                        token_type = tokenResponse.TokenType,
-                        scope = tokenResponse.Scope,
-                    }
-                );
+                // ไม่จำเป็นต้อง return access_token ใน body แล้ว
+                return Ok(new { message = "Login success" });
             }
             catch (UnauthorizedAccessException)
             {
