@@ -1,7 +1,7 @@
 'use client';
 
 import Image from "next/image";
-import { getData } from "../../services/api";
+import { getData } from "../lib/api";
 import { useEffect, useState } from 'react';
 
 export default function Home() {
