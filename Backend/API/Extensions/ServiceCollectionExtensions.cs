@@ -6,10 +6,12 @@ using Duende.IdentityServer.Services;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace API.Extensions
@@ -71,9 +73,12 @@ namespace API.Extensions
                 })
                 .AddJwtBearer(options =>
                 {
-                    options.Authority = "https://localhost:5001";
-                    options.Audience = "api1";
-                    options.RequireHttpsMetadata = true;
+                    options.Authority = configuration["IdentityServer:Authority"];
+                    options.Audience = "api1"; // ชื่อตรงกับ ApiResource/ApiScope
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false, // หรือ true ถ้าต้องการตรวจสอบ audience
+                    };
                 });
 
             // IdentityServer
@@ -83,12 +88,16 @@ namespace API.Extensions
                     "AllowFrontend",
                     policy =>
                         policy
-                            .WithOrigins("http://localhost:3000")
+                            .WithOrigins(configuration["Cors:AllowedOrigins"])
                             .AllowAnyHeader()
                             .AllowAnyMethod()
-                            .AllowCredentials() // อนุญาตให้ส่งคุกกี้
+                            .AllowCredentials() // Allow sending credentials (cookies, authorization headers, etc.)
                 );
             });
+
+            services
+                .AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(configuration["Keys:Path"]));
 
             return services;
         }

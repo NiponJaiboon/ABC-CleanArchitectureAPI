@@ -20,7 +20,14 @@ namespace API.Controllers
         [HttpGet()]
         public async Task<IActionResult> GetProfile()
         {
+            // Debug logs (for development only)
+            Console.WriteLine("User.Identity.IsAuthenticated: " + User.Identity.IsAuthenticated);
+            Console.WriteLine("Authorization header: " + Request.Headers["Authorization"]);
+
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            return Unauthorized();
+
             var profile = await _authService.GetProfileAsync(userId);
             return Ok(profile);
         }

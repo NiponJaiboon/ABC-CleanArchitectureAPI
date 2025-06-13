@@ -26,7 +26,86 @@ export async function login(username: string, password: string): Promise<LoginRe
     const data: LoginResponse = await res.json();
 
     // ถ้าใช้ HttpOnly cookie ไม่ต้องเก็บ token ใน localStorage
+    localStorage.setItem("token", data.access_token);
+
+    return data;
+}
+
+export async function logout() {
+    const res = await fetch(`${API_URL}/api/auth/logout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // << ตรงนี้สำคัญสำหรับ cookie
+    });
+    if (!res.ok) throw new Error("Logout failed");
+    return res.json();
+}
+
+export async function register(username: string, password: string): Promise<LoginResponse> {
+    const res = await fetch(`${API_URL}/api/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+        credentials: "include", // << ตรงนี้สำคัญสำหรับ cookie
+    });
+    if (!res.ok) throw new Error("Registration failed");
+    const data: LoginResponse = await res.json();
+
+    // ถ้าใช้ HttpOnly cookie ไม่ต้องเก็บ token ใน localStorage
     // localStorage.setItem("token", data.access_token);
 
     return data;
+}
+
+export async function getUser() {
+    const res = await fetch(`${API_URL}/api/auth/user`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // << ตรงนี้สำคัญสำหรับ cookie
+    });
+    if (!res.ok) throw new Error("Fetch user failed");
+    return res.json();
+}
+
+export async function refreshToken() {
+    const res = await fetch(`${API_URL}/api/auth/refresh`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // << ตรงนี้สำคัญสำหรับ cookie
+    });
+    if (!res.ok) throw new Error("Refresh token failed");
+    return res.json();
+}
+
+export async function getProducts() {
+    const res = await fetch(`${API_URL}/api/products`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // << ตรงนี้สำคัญสำหรับ cookie
+    });
+    if (!res.ok) throw new Error("Fetch products failed");
+    return res.json();
+}           
+
+export async function getProductById(id: string) {
+    const res = await fetch(`${API_URL}/api/products/${id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // << ตรงนี้สำคัญสำหรับ cookie
+    });
+    if (!res.ok) throw new Error("Fetch product failed");
+    return res.json();
+}
+
+export async function getProfile() {
+    const res = await fetch(`${API_URL}/api/Profile`, {
+        method: "GET",
+        headers: { 
+            "Content-Type": "application/json"
+            // ไม่ต้องใส่ Authorization header
+        },
+        credentials: "include", // สำคัญสำหรับ cookie
+    });
+    if (!res.ok) throw new Error("Fetch profile failed");
+    return res.json();
 }

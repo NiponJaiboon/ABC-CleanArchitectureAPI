@@ -1,4 +1,5 @@
 using API.Extensions;
+using API.Middlewares;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -38,7 +39,8 @@ app.UseCustomMiddlewares(); // MiddlewareExtensions
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
 app.UseIdentityServer();
-app.UseAuthentication(); // << ต้องมาก่อน UseAuthorization
+app.UseMiddleware<JwtFromCookieMiddleware>();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

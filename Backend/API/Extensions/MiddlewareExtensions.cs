@@ -13,12 +13,6 @@ namespace API.Extensions
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ABC API v1"));
             }
 
-            app.UseHttpsRedirection();
-            app.UseIdentityServer();
-            app.UseAuthentication();
-            app.UseAuthorization();
-            app.MapControllers();
-
             return app;
         }
     }

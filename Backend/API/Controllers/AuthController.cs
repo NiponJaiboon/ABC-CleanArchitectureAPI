@@ -70,14 +70,24 @@ namespace API.Controllers
                         new CookieOptions
                         {
                             HttpOnly = true,
-                            Secure = true, // ใช้ true ใน production
-                            SameSite = SameSiteMode.Strict, // หรือ Lax ตามความเหมาะสม
+                            Secure = true, // ต้องเป็น true เมื่อ SameSite=None
+                            SameSite = SameSiteMode.None, // ต้องใช้ None ถ้าจะ cross-site
+                            Path = "/", // กำหนด path ที่ cookie นี้จะถูกส่งไป
                             Expires = DateTimeOffset.UtcNow.AddSeconds(tokenResponse.ExpiresIn),
                         }
                     );
                 }
                 // ไม่จำเป็นต้อง return access_token ใน body แล้ว
-                return Ok(new { message = "Login success" });
+                return Ok(
+                    new
+                    {
+                        message = "Login success",
+                        access_token = tokenResponse.AccessToken,
+                        expires_in = tokenResponse.ExpiresIn,
+                        token_type = tokenResponse.TokenType,
+                        scope = tokenResponse.Scope,
+                    }
+                );
             }
             catch (UnauthorizedAccessException)
             {

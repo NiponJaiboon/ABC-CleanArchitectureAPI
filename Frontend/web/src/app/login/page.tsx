@@ -19,6 +19,7 @@ export default function LoginPage() {
       // ถ้าใช้ HttpOnly cookie ไม่ต้องเก็บ token ใน localStorage
       // localStorage.setItem("token", data.access_token);
       // TODO: redirect ไปหน้าอื่น
+      window.location.href = "/profile"; // เปลี่ยนเส้นทางไปยังหน้าโปรไฟล์หลังจากเข้าสู่ระบบสำเร็จ
     } catch {
       setError("เข้าสู่ระบบไม่สำเร็จ");
     } finally {
