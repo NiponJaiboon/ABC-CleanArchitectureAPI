@@ -1,9 +1,12 @@
 "use client";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-import { getProfile } from "@/lib/api";
 import React, { useEffect, useState } from "react";
+import { getProfile } from "@/lib/api";
+import { useAutoRefreshFetch } from "@/hooks/useAutoRefreshFetch";
 
 const ProfilePage: React.FC = () => {
+  const fetchWithAutoRefresh = useAutoRefreshFetch();
   const [profile, setProfile] = useState<{
     username: string;
     email: string;
@@ -14,6 +17,8 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        const res = await fetchWithAutoRefresh(`${API_URL}/api/Profile`);
+        if (!res.ok) window.location.href = "/login";
         const result = await getProfile();
         setProfile(result);
       } catch {
@@ -21,7 +26,7 @@ const ProfilePage: React.FC = () => {
       }
     };
     fetchProfile();
-  }, []);
+  }, [fetchWithAutoRefresh]);
 
   if (error) {
     return <div>{error}</div>;

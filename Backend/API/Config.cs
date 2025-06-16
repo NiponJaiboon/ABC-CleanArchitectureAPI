@@ -20,15 +20,7 @@ namespace API
                     ClientSecrets = { new Secret("secret".Sha256()) },
                     // Added openid and profile scopes
                     AllowOfflineAccess = true, // UPDATE public."Clients" SET  "AllowOfflineAccess"="true" WHERE "ClientId"='my-client';
-                    AllowedScopes =
-                    {
-                        "api1",
-                        "openid",
-                        "profile",
-                        "email",
-                        "role",
-                        "offline_access",
-                    },
+                    AllowedScopes = { "api1", "openid", "profile", "role", "offline_access" },
                 },
             };
 

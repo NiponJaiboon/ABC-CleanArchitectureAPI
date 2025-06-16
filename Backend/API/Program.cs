@@ -35,16 +35,30 @@ builder.Host.UseSerilog();
 // Build the app
 var app = builder.Build();
 
+app.Use(
+    async (context, next) =>
+    {
+        var token = context.Request.Cookies["access_token"];
+        if (!string.IsNullOrEmpty(token) && !context.Request.Headers.ContainsKey("Authorization"))
+        {
+            context.Request.Headers.Append("Authorization", $"Bearer {token}");
+        }
+        await next();
+    }
+);
+
 // Seed ข้อมูล IdentityServer และ Roles
 app.Services.SeedIdentityServerAndRoles(); // SeedDataExtensions
 
 // ใช้งาน middleware pipeline
 app.UseCustomMiddlewares(); // MiddlewareExtensions
 
+app.UseRouting();
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
 app.UseIdentityServer();
-app.UseMiddleware<JwtFromCookieMiddleware>();
+
+// app.UseMiddleware<JwtFromCookieMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

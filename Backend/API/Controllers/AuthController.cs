@@ -77,18 +77,33 @@ namespace API.Controllers
                         }
                     );
                 }
-                // ไม่จำเป็นต้อง return access_token ใน body แล้ว
-                return Ok(
-                    new
+
+                Response.Cookies.Append(
+                    "access_token",
+                    tokenResponse.AccessToken,
+                    new CookieOptions
                     {
-                        message = "Login success",
-                        access_token = tokenResponse.AccessToken,
-                        refresh_token = tokenResponse.RefreshToken,
-                        expires_in = tokenResponse.ExpiresIn,
-                        token_type = tokenResponse.TokenType,
-                        scope = tokenResponse.Scope,
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None,
+                        Path = "/",
+                        Expires = DateTimeOffset.UtcNow.AddSeconds(tokenResponse.ExpiresIn),
                     }
                 );
+                Response.Cookies.Append(
+                    "refresh_token",
+                    tokenResponse.RefreshToken,
+                    new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None,
+                        Path = "/",
+                        Expires = DateTimeOffset.UtcNow.AddSeconds(tokenResponse.ExpiresIn),
+                    }
+                );
+
+                return Ok(new { message = "Login success" });
             }
             catch (UnauthorizedAccessException)
             {
@@ -146,16 +161,33 @@ namespace API.Controllers
                     _logger.LogWarning("Token refresh failed: {Error}", tokenResponse.Error);
                     return BadRequest(new { message = tokenResponse.Error });
                 }
-                return Ok(
-                    new
+
+                Response.Cookies.Append(
+                    "access_token",
+                    tokenResponse.AccessToken,
+                    new CookieOptions
                     {
-                        access_token = tokenResponse.AccessToken,
-                        refresh_token = tokenResponse.RefreshToken,
-                        expires_in = tokenResponse.ExpiresIn,
-                        token_type = tokenResponse.TokenType,
-                        scope = tokenResponse.Scope,
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None,
+                        Path = "/",
+                        Expires = DateTimeOffset.UtcNow.AddSeconds(tokenResponse.ExpiresIn),
                     }
                 );
+
+                Response.Cookies.Append(
+                    "refresh_token",
+                    tokenResponse.RefreshToken,
+                    new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None,
+                        Path = "/",
+                        Expires = DateTimeOffset.UtcNow.AddSeconds(tokenResponse.ExpiresIn),
+                    }
+                );
+                return Ok(new { message = "Refresh success" });
             }
             catch (Exception ex)
             {
@@ -284,15 +316,32 @@ namespace API.Controllers
                     return BadRequest(new { message = loginResponse.Error });
 
                 _logger.LogInformation("External user logged in successfully");
-                return Ok(
-                    new
+
+                Response.Cookies.Append(
+                    "access_token",
+                    loginResponse.AccessToken,
+                    new CookieOptions
                     {
-                        access_token = loginResponse.AccessToken,
-                        expires_in = loginResponse.ExpiresIn,
-                        token_type = loginResponse.TokenType,
-                        scope = loginResponse.Scope,
+                        HttpOnly = true,
+                        Secure = true, // แนะนำให้ใช้ใน production
+                        SameSite = SameSiteMode.Strict, // หรือ Lax ตามความเหมาะสม
+                        Expires = DateTimeOffset.UtcNow.AddSeconds(loginResponse.ExpiresIn),
                     }
                 );
+
+                Response.Cookies.Append(
+                    "refresh_token",
+                    loginResponse.RefreshToken,
+                    new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true, // แนะนำให้ใช้ใน production
+                        SameSite = SameSiteMode.Strict, // หรือ Lax ตามความเหมาะสม
+                        Expires = DateTimeOffset.UtcNow.AddSeconds(loginResponse.ExpiresIn),
+                    }
+                );
+
+                return Ok(new { message = "External login success" });
             }
             catch (Exception ex)
             {

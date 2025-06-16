@@ -57,6 +57,11 @@ export async function register(username: string, password: string): Promise<Logi
     return data;
 }
 
+export async function refreshToken(): Promise<boolean> {
+    const res = await fetch(`${API_URL}/api/auth/refresh`, { method: 'POST', credentials: 'include' });
+    return res.ok;
+}
+
 export async function getUser() {
     const res = await fetch(`${API_URL}/api/auth/user`, {
         method: "GET",
@@ -64,16 +69,6 @@ export async function getUser() {
         credentials: "include", // << ตรงนี้สำคัญสำหรับ cookie
     });
     if (!res.ok) throw new Error("Fetch user failed");
-    return res.json();
-}
-
-export async function refreshToken() {
-    const res = await fetch(`${API_URL}/api/auth/refresh`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include", // << ตรงนี้สำคัญสำหรับ cookie
-    });
-    if (!res.ok) throw new Error("Refresh token failed");
     return res.json();
 }
 
@@ -98,24 +93,11 @@ export async function getProductById(id: string) {
 }
 
 export async function getProfile() {
-    const tokencookie = getCookie('access_token');
-    console.log("Token from cookie:", tokencookie);
-    const token = localStorage.getItem("token");
-    console.log("Token from localStorage:", token);
     const res = await fetch(`${API_URL}/api/Profile`, {
         method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-            // ไม่ต้องใส่ Authorization header
-        },
-        credentials: "include", // สำคัญสำหรับ cookie
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // ใช้ cookie ในการยืนยันตัวตน
     });
     if (!res.ok) throw new Error("Fetch profile failed");
     return res.json();
-}
-
-function getCookie(name: string): string | null {
-    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    return match ? decodeURIComponent(match[2]) : null;
 }

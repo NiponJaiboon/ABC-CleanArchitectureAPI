@@ -23,12 +23,32 @@ namespace API.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
+            _logger.LogInformation("Server time (UTC): " + DateTime.UtcNow);
+            _logger.LogInformation("Server time (Local): " + DateTime.Now);
+
             var token = context.Request.Cookies["access_token"];
             if (
                 !string.IsNullOrEmpty(token)
                 && !context.Request.Headers.ContainsKey("Authorization")
             )
             {
+                var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+                try
+                {
+                    var jwtToken = handler.ReadJwtToken(token);
+                    foreach (var claim in jwtToken.Claims)
+                    {
+                        _logger.LogInformation(
+                            "ClaimType: {ClaimType}, Value: {Value}",
+                            claim.Type,
+                            claim.Value
+                        );
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning("Failed to parse JWT token: {Message}", ex.Message);
+                }
                 context.Request.Headers.Append("Authorization", $"Bearer {token}");
                 _logger.LogInformation(
                     "JWT token added to Authorization header from cookie.{Token}",

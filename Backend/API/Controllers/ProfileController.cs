@@ -16,17 +16,33 @@ namespace API.Controllers
             _authService = authService;
         }
 
-        [Authorize]
+        [Authorize(Policy = "GeneralUser")]
         [HttpGet()]
         public async Task<IActionResult> GetProfile()
         {
             // Debug logs (for development only)
             Console.WriteLine("User.Identity.IsAuthenticated: " + User.Identity.IsAuthenticated);
             Console.WriteLine("Authorization header: " + Request.Headers["Authorization"]);
+            // แสดงข้อมูล Role และ Policy ของผู้ใช้ (ถ้ามี)
+            var roles = User
+                .Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
+            Console.WriteLine("User Roles: " + string.Join(", ", roles));
+
+            // ตัวอย่างการดึง Policy (จริงๆ แล้ว Policy จะถูกใช้ใน Authorize Attribute)
+            // แต่สามารถตรวจสอบ Claims อื่นๆ ได้เช่นกัน
+            foreach (var claim in User.Claims)
+            {
+                Console.WriteLine($"Claim Type: {claim.Type}, Value: {claim.Value}");
+            }
+
+            // ตรวจสอบว่าเวลาของเซิร์ฟเวอร์ตรงกันหรือไม่ (สำหรับการสาธิต, แสดง log เวลาเซิร์ฟเวอร์ปัจจุบัน)
+            Console.WriteLine("Server Time (UTC): " + DateTime.UtcNow.ToString("o"));
 
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
-            return Unauthorized();
+                return Unauthorized();
 
             var profile = await _authService.GetProfileAsync(userId);
             return Ok(profile);

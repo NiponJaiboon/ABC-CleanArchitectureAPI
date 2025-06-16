@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Application.Services;
 using Core.Constants;
 using Core.Entities;
@@ -73,11 +74,14 @@ namespace API.Extensions
                 })
                 .AddJwtBearer(options =>
                 {
-                    options.Authority = configuration["IdentityServer:Authority"];
-                    options.Audience = "api1"; // ชื่อตรงกับ ApiResource/ApiScope
+                    options.Authority = "https://localhost:5001";
+                    options.Audience = "api1";
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateAudience = false, // หรือ true ถ้าต้องการตรวจสอบ audience
+                        ValidateAudience = false,
+                        ValidateIssuer = true,
+                        ValidIssuer = "https://localhost:5001",
+                        RoleClaimType = ClaimTypes.Role,
                     };
                 });
 
