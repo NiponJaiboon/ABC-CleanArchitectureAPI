@@ -19,7 +19,16 @@ namespace API
                     AccessTokenLifetime = 1800, // อายุของ access token (วินาที) = 30 นาที
                     ClientSecrets = { new Secret("secret".Sha256()) },
                     // Added openid and profile scopes
-                    AllowedScopes = { "api1", "openid", "profile", "email" },
+                    AllowOfflineAccess = true, // UPDATE public."Clients" SET  "AllowOfflineAccess"="true" WHERE "ClientId"='my-client';
+                    AllowedScopes =
+                    {
+                        "api1",
+                        "openid",
+                        "profile",
+                        "email",
+                        "role",
+                        "offline_access",
+                    },
                 },
             };
 

@@ -181,6 +181,9 @@ API ที่ต้องการ auth:
    ไม่ต้อง custom middleware ฝั่ง backend
 
 สรุปแนวทาง
-   Backend: ส่ง JWT ใน response body, ไม่ set cookie
-   Frontend: เก็บ token เอง, ส่งใน Authorization header ทุก request
-   ไม่ต้องใช้ cookie สำหรับ access token
+Backend: ส่ง JWT ใน response body, ไม่ set cookie
+Frontend: เก็บ token เอง, ส่งใน Authorization header ทุก request
+ไม่ต้องใช้ cookie สำหรับ access token
+
+C:\Users\nipon.j\AppData\Local\ASP.NET\DataProtection-Keys
+// UPDATE public."Clients" SET "AllowOfflineAccess"="true" WHERE "ClientId"='my-client';

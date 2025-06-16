@@ -83,6 +83,7 @@ namespace API.Controllers
                     {
                         message = "Login success",
                         access_token = tokenResponse.AccessToken,
+                        refresh_token = tokenResponse.RefreshToken,
                         expires_in = tokenResponse.ExpiresIn,
                         token_type = tokenResponse.TokenType,
                         scope = tokenResponse.Scope,
@@ -149,6 +150,7 @@ namespace API.Controllers
                     new
                     {
                         access_token = tokenResponse.AccessToken,
+                        refresh_token = tokenResponse.RefreshToken,
                         expires_in = tokenResponse.ExpiresIn,
                         token_type = tokenResponse.TokenType,
                         scope = tokenResponse.Scope,

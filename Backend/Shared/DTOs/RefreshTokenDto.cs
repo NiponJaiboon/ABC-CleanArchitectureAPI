@@ -7,6 +7,6 @@ namespace Shared.DTOs
 {
     public class RefreshTokenDto
     {
-        public string RefreshToken { get; internal set; }
+        public string RefreshToken { get; set; }
     }
 }

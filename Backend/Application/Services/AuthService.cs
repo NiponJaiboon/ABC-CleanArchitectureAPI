@@ -221,7 +221,8 @@ namespace Application.Services
                     ClientId = "my-client",
                     ClientSecret = "secret",
                     UserName = user.UserName,
-                    Password = null, // หรือ generate password เฉพาะสำหรับ external
+                    // หรือ generate password เฉพาะสำหรับ external
+                    // Scope = "api1 openid profile offline_access",
                 }
             );
         }

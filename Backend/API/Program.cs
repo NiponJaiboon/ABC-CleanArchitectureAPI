@@ -5,13 +5,18 @@ using Serilog;
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File(
-        "Logs/Information/log-.txt",
+        Path.Combine("Logs", "Information", "log-.txt"),
         restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information,
         rollingInterval: RollingInterval.Day
     )
     .WriteTo.File(
-        "Logs/Error/error-.txt",
+        Path.Combine("Logs", "Error", "error-.txt"),
         restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error,
+        rollingInterval: RollingInterval.Day
+    )
+    .WriteTo.File(
+        Path.Combine("Logs", "Warning", "warning-.txt"),
+        restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Warning,
         rollingInterval: RollingInterval.Day
     )
     .CreateLogger();

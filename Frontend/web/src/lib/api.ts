@@ -20,13 +20,13 @@ export async function login(username: string, password: string): Promise<LoginRe
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
-        credentials: "include", // << ตรงนี้สำคัญสำหรับ cookie
+        credentials: "include", // สำคัญ! เพื่อให้ cookie ถูกส่งไป-กลับ
     });
     if (!res.ok) throw new Error("Login failed");
     const data: LoginResponse = await res.json();
 
-    // ถ้าใช้ HttpOnly cookie ไม่ต้องเก็บ token ใน localStorage
-    localStorage.setItem("token", data.access_token);
+    // ไม่ต้องเก็บ token ใน localStorage หรือ memory
+    // Token จะถูกแนบอัตโนมัติใน cookie (HttpOnly) ทุกครั้งที่เรียก API
 
     return data;
 }
@@ -85,7 +85,7 @@ export async function getProducts() {
     });
     if (!res.ok) throw new Error("Fetch products failed");
     return res.json();
-}           
+}
 
 export async function getProductById(id: string) {
     const res = await fetch(`${API_URL}/api/products/${id}`, {
@@ -98,14 +98,24 @@ export async function getProductById(id: string) {
 }
 
 export async function getProfile() {
+    const tokencookie = getCookie('access_token');
+    console.log("Token from cookie:", tokencookie);
+    const token = localStorage.getItem("token");
+    console.log("Token from localStorage:", token);
     const res = await fetch(`${API_URL}/api/Profile`, {
         method: "GET",
-        headers: { 
-            "Content-Type": "application/json"
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
             // ไม่ต้องใส่ Authorization header
         },
         credentials: "include", // สำคัญสำหรับ cookie
     });
     if (!res.ok) throw new Error("Fetch profile failed");
     return res.json();
+}
+
+function getCookie(name: string): string | null {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
 }

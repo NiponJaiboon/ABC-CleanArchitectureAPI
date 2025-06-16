@@ -13,5 +13,6 @@ namespace Shared.DTOs
 
         [Required]
         public string Password { get; set; }
+
     }
 }
