@@ -151,11 +151,20 @@ namespace API.Controllers
         }
 
         [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh([FromBody] RefreshTokenDto dto)
+        public async Task<IActionResult> Refresh()
         {
             try
             {
-                var tokenResponse = await _authService.RefreshTokenAsync(dto);
+                var refreshToken = Request.Cookies["refresh_token"];
+                if (string.IsNullOrEmpty(refreshToken))
+                {
+                    return BadRequest(new { message = "No refresh token in cookie." });
+                }
+
+                var tokenResponse = await _authService.RefreshTokenAsync(
+                    new RefreshTokenDto { RefreshToken = refreshToken }
+                );
+
                 if (tokenResponse.IsError)
                 {
                     _logger.LogWarning("Token refresh failed: {Error}", tokenResponse.Error);
