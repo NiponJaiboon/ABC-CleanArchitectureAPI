@@ -1,12 +1,11 @@
 "use client";
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 import React, { useEffect, useState } from "react";
 import { getProfile } from "@/lib/api";
 import { useAutoRefreshFetch } from "@/hooks/useAutoRefreshFetch";
 
 const ProfilePage: React.FC = () => {
-  const fetchWithAutoRefresh = useAutoRefreshFetch();
+  const { handleRefreshToken } = useAutoRefreshFetch();
   const [profile, setProfile] = useState<{
     username: string;
     email: string;
@@ -17,16 +16,20 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetchWithAutoRefresh(`${API_URL}/api/Profile`);
-        if (!res.ok) window.location.href = "/login";
+        const res = await handleRefreshToken();
+        console.log("Profile fetch response:", res);
+        // if (!res.ok) window.location.href = "/login";
         const result = await getProfile();
         setProfile(result);
       } catch {
         setError("ไม่สามารถดึงข้อมูลโปรไฟล์ได้");
       }
     };
+    // ป้องกัน loop ไม่รู้จบจาก handleRefreshToken ที่เปลี่ยน reference ทุก render
+    // ให้ใช้ useCallback ใน useAutoRefreshFetch หรือ disable exhaustive-deps
     fetchProfile();
-  }, [fetchWithAutoRefresh]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [handleRefreshToken]);
 
   if (error) {
     return <div>{error}</div>;

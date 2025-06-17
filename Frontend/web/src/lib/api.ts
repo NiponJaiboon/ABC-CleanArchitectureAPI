@@ -57,10 +57,35 @@ export async function register(username: string, password: string): Promise<Logi
     return data;
 }
 
-export async function refreshToken(): Promise<boolean> {
-    const res = await fetch(`${API_URL}/api/auth/refresh`, { method: 'POST', credentials: 'include' });
-    return res.ok;
+// export async function refreshToken(): Promise<boolean> {
+//     const res = await fetch(`${API_URL}/api/auth/refresh`, { method: 'POST', credentials: 'include' });
+//     return res.ok;
+// }
+
+// Frontend/web/src/lib/api.ts (ตัวอย่าง)
+
+export async function refreshToken() {
+    // ตรวจสอบให้แน่ใจว่าใช้ method: 'POST'
+    const response = await fetch(`${API_URL}/api/Auth/refresh`, {
+        method: 'POST', // <--- ต้องเป็น POST
+        headers: {
+            'Content-Type': 'application/json',
+            // อาจจะต้องส่ง Refresh Token ใน body หรือเป็น cookie ขึ้นอยู่กับ Backend
+        },
+        // body: JSON.stringify({ refreshToken: 'your_refresh_token_here' }), // ถ้า Backend ต้องการ Refresh Token ใน body
+        credentials: 'include' // ถ้า Backend ใช้ Cookie
+    });
+
+    if (!response.ok) {
+        // จัดการ Error เช่น Redirect ไปหน้า Login ถ้า Refresh Token หมดอายุจริงๆ
+        throw new Error('Failed to refresh token');
+    }
+
+    // ประมวลผล response เช่น เก็บ Access Token ใหม่
+    // const data = await response.json();
+    // saveNewAccessToken
 }
+
 
 export async function getUser() {
     const res = await fetch(`${API_URL}/api/auth/user`, {

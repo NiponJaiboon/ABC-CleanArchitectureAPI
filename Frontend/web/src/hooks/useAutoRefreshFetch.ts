@@ -1,22 +1,20 @@
-import { useCallback } from 'react';
+import { refreshToken } from '@/lib/api';
+import { useState, useCallback } from 'react';
 
 export function useAutoRefreshFetch() {
-  const fetchWithAutoRefresh = useCallback(async (url: string, options: RequestInit = {}) => {
-    let response = await fetch(url, { ...options, credentials: 'include' });
+  const [refreshTokenStatus, setRefreshTokenStatus] = useState<string>("");
 
-    if (response.status === 401) {
-      // เรียก refresh token endpoint
-      const refreshRes = await fetch('/api/auth/refresh', { method: 'POST', credentials: 'include' });
-      if (refreshRes.ok) {
-        // ถ้า refresh สำเร็จ ลอง fetch ใหม่
-        response = await fetch(url, { ...options, credentials: 'include' });
-      } else {
-        throw new Error('Session expired');
-      }
+  const handleRefreshToken = useCallback(async () => {
+    setRefreshTokenStatus("กำลังรีเฟรช...");
+    try {
+      await refreshToken(); // <--- การเรียกนี้ต้องใช้ POST
+      setRefreshTokenStatus("รีเฟรชสำเร็จ!");
+    } catch (err: unknown) {
+      setRefreshTokenStatus(
+        `รีเฟรชล้มเหลว: ${(err as Error).message || "Unknown error"}`
+      );
     }
-
-    return response;
   }, []);
 
-  return fetchWithAutoRefresh;
+  return { handleRefreshToken, refreshTokenStatus };
 }
