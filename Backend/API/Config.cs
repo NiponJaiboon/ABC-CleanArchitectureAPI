@@ -9,33 +9,45 @@ namespace API
 {
     public static class Config
     {
-        public static IEnumerable<Client> Clients =>
+        public static IEnumerable<Client> GetClients(IConfiguration configuration) =>
             new List<Client>
             {
                 new Client
                 {
                     ClientId = "my-client",
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-                    AccessTokenLifetime = 1800, // อายุของ access token (วินาที) = 30 นาที
+                    AccessTokenLifetime = 3600, // access token จะมีอายุ 1 ชั่วโมง
+                    AbsoluteRefreshTokenLifetime = 2592000, // refresh token จะมีอายุรวมไม่เกิน 30 วัน นับจากวันที่ออก token ครั้งแรก
+                    SlidingRefreshTokenLifetime = 604800, // Refresh token จะมีอายุขยายออกไปเรื่อย ๆ ทุกครั้งที่ใช้งาน (7 วันต่อรอบ)
                     ClientSecrets = { new Secret("secret".Sha256()) },
                     // Added openid and profile scopes
                     AllowOfflineAccess = true, // UPDATE public."Clients" SET  "AllowOfflineAccess"="true" WHERE "ClientId"='my-client';
-                    AllowedScopes = { "api1", "openid", "profile", "role", "offline_access" },
+                    AllowedScopes =
+                    {
+                        configuration["IdentityServer:Audience"] ?? "api1", // Default to api1 if not set
+                        "openid",
+                        "profile",
+                        "role",
+                        "offline_access",
+                    },
                 },
             };
 
-        public static IEnumerable<ApiScope> ApiScopes =>
+        public static IEnumerable<ApiScope> GetApiScopes(IConfiguration configuration) =>
             new List<ApiScope>
             {
-                new ApiScope("api1", "My API") { UserClaims = { "Id", "name", "email", "role" } },
+                new ApiScope(configuration["IdentityServer:ApiName"] ?? "api1", "My API")
+                {
+                    UserClaims = { "Id", "name", "email", "role" },
+                },
             };
 
-        public static IEnumerable<ApiResource> ApiResources =>
+        public static IEnumerable<ApiResource> GetApiResources(IConfiguration configuration) =>
             new List<ApiResource>
             {
-                new ApiResource("api1", "My API")
+                new ApiResource(configuration["IdentityServer:ApiName"] ?? "api1", "My API")
                 {
-                    Scopes = { "api1" },
+                    Scopes = { configuration["IdentityServer:ApiName"] ?? "api1" },
                     UserClaims = { "name", "email", "role" },
                 },
             };

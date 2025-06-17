@@ -14,9 +14,10 @@ namespace API.Extensions
             using (var scope = serviceProvider.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+                var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
                 if (!context.Clients.Any())
                 {
-                    foreach (var client in Config.Clients)
+                    foreach (var client in Config.GetClients(configuration))
                     {
                         context.Clients.Add(client.ToEntity());
                     }
@@ -32,7 +33,7 @@ namespace API.Extensions
                 }
                 if (!context.ApiScopes.Any())
                 {
-                    foreach (var scopeItem in Config.ApiScopes)
+                    foreach (var scopeItem in Config.GetApiScopes(configuration))
                     {
                         context.ApiScopes.Add(scopeItem.ToEntity());
                     }
@@ -40,7 +41,7 @@ namespace API.Extensions
                 }
                 if (!context.ApiResources.Any())
                 {
-                    foreach (var resource in Config.ApiResources)
+                    foreach (var resource in Config.GetApiResources(configuration))
                     {
                         context.ApiResources.Add(resource.ToEntity());
                     }

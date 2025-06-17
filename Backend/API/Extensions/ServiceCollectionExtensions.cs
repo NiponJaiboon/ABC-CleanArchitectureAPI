@@ -65,6 +65,15 @@ namespace API.Extensions
                 );
             });
 
+            // Read the IdentityServer Authority URL from configuration
+            var identityServerAuthority = configuration["IdentityServer:Authority"];
+            if (string.IsNullOrEmpty(identityServerAuthority))
+            {
+                throw new InvalidOperationException(
+                    "IdentityServer:Authority configuration is missing."
+                );
+            }
+
             // Authentication
             services
                 .AddAuthentication(options =>
@@ -74,13 +83,13 @@ namespace API.Extensions
                 })
                 .AddJwtBearer(options =>
                 {
-                    options.Authority = "https://localhost:5001";
-                    options.Audience = "api1";
+                    options.Authority = identityServerAuthority;
+                    options.Audience = configuration["Jwt:Audience"] ?? "api1"; // Default to "api1" if not set
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false,
                         ValidateIssuer = true,
-                        ValidIssuer = "https://localhost:5001",
+                        ValidIssuer = identityServerAuthority,
                         RoleClaimType = ClaimTypes.Role,
                     };
                 });
