@@ -111,3 +111,150 @@ web #โฟลเดอร์หลักของโปรเจกต์
 แนะนำให้เริ่มจากหน้า login ก่อน เพราะเป็นจุดเริ่มต้นของ flow ทั้งหมด
 
 ถ้าต้องการตัวอย่างโค้ดหรือรายละเอียดในแต่ละขั้น แจ้งได้เลยครับ!
+
+1. โครงสร้าง Directory ที่แนะนำ:
+
+web/
+├── public/
+├── src/
+│ ├── app/ # Next.js App Router (Pages and Layouts)
+│ │ ├── login/
+│ │ │ ├── page.tsx # Login Page
+│ │ │ └── ...
+│ │ ├── profile/
+│ │ │ ├── page.tsx # Profile Page
+│ │ │ └── ...
+│ │ ├── dashboard/
+│ │ │ ├── page.tsx # Dashboard Page
+│ │ │ └── ...
+│ │ ├── cms/
+│ │ │ ├── page.tsx # CMS Page
+│ │ │ └── ...
+│ │ ├── layout.tsx # Root Layout
+│ │ └── page.tsx # Home Page
+│ ├── components/ # Reusable Components
+│ │ ├── common/ # Common UI Components
+│ │ │ ├── Button.tsx
+│ │ │ ├── Input.tsx
+│ │ │ └── ...
+│ │ ├── auth/ # Authentication Components
+│ │ │ ├── LoginForm.tsx
+│ │ │ └── ...
+│ │ ├── ui/ # Specific UI Components
+│ │ │ ├── Navbar.tsx
+│ │ │ ├── Footer.tsx
+│ │ │ ├── ProfileCard.tsx
+│ │ │ └── CMSForm.tsx
+│ │ └── ...
+│ ├── hooks/ # Custom React Hooks
+│ │ ├── useAuth.ts
+│ │ ├── useFetch.ts
+│ │ └── ...
+│ ├── lib/ # Utility Functions and API Clients
+│ │ ├── api.ts # API Client (Axios/Fetch)
+│ │ ├── auth.ts # Authentication Logic
+│ │ └── ...
+│ ├── redux/ # Redux Store and Actions
+│ │ ├── store.ts # Redux Store Configuration
+│ │ ├── reducers/ # Reducers
+│ │ │ ├── authReducer.ts
+│ │ │ └── ...
+│ │ ├── actions/ # Actions
+│ │ │ ├── authActions.ts
+│ │ │ └── ...
+│ │ └── ...
+│ ├── styles/ # Global Styles and CSS Modules
+│ │ ├── globals.css
+│ │ └── ...
+│ ├── types/ # TypeScript Types
+│ │ ├── user.ts # User Type Definition
+│ │ └── ...
+│ ├── utils/ # Utility Functions
+│ │ ├── date.ts # Date Formatting Functions
+│ │ └── ...
+│ ├── data/ # Mock Data (for development)
+│ │ ├── projects.json
+│ │ ├── users.json
+│ │ └── ...
+│ └── ...
+├── README.md
+├── package.json
+├── tsconfig.json
+├── next.config.js
+└── .env.local
+
+คำอธิบาย:
+
+src/app/: ใช้สำหรับ Next.js App Router (Pages และ Layouts)
+src/components/: Components ที่นำกลับมาใช้ใหม่ได้
+common/: Components ที่ใช้บ่อยๆ เช่น Button, Input
+auth/: Components ที่เกี่ยวข้องกับ Authentication
+ui/: Components ที่ใช้เฉพาะในบางหน้า
+src/hooks/: Custom React Hooks
+src/lib/: Utility Functions และ API Clients
+src/redux/: Redux Store และ Actions
+src/styles/: Global Styles และ CSS Modules
+src/types/: TypeScript Types
+src/utils/: Utility Functions
+src/data/: Mock Data (สำหรับ Development)
+
+2. Redux Integration:
+   src/redux/store.ts: กำหนดค่า Redux Store
+   src/redux/reducers/: Reducers สำหรับจัดการ State
+   src/redux/actions/: Actions สำหรับ Dispatch Events
+
+3. ESLint และ Prettier:
+   ตรวจสอบให้แน่ใจว่า ESLint และ Prettier ถูกตั้งค่าอย่างถูกต้อง และทำงานร่วมกันได้ดี
+   ใช้ ESLint Rules ที่แนะนำ (Recommended Rules) และปรับแต่งตามความเหมาะสม
+   ใช้ Prettier เพื่อ Format โค้ดโดยอัตโนมัติ
+
+4. Code Style:
+   ใช้ Consistent Naming Conventions (เช่น Camel Case สำหรับ Variables และ Functions, Pascal Case สำหรับ Components)
+   เขียน Comments เพื่ออธิบายโค้ดที่ซับซ้อน
+   ใช้ TypeScript Types เพื่อเพิ่มความปลอดภัยและอ่านง่าย
+
+5. Testing:
+   เขียน Unit Tests สำหรับ Functions และ Components
+   ใช้ Testing Library เช่น Jest และ React Testing Library
+   เขียน Integration Tests เพื่อทดสอบการทำงานร่วมกันของ Modules
+
+6. API Client:
+   สร้าง API Client ที่ Reusable (เช่น Axios Instance)
+   จัดการ Error Handling อย่างเหมาะสม
+
+7. Authentication:
+   ใช้ Custom Hooks เพื่อจัดการ Authentication Logic
+   เก็บ Token ใน Cookie หรือ Local Storage อย่างปลอดภัย
+
+8. Components:
+   แบ่ง UI ออกเป็น Components เล็กๆ ที่รับผิดชอบหน้าที่เดียว
+   ใช้ Props เพื่อส่งข้อมูลไปยัง Components
+   ใช้ State เพื่อจัดการข้อมูลภายใน Components
+
+9. Hooks:
+   ใช้ Custom Hooks เพื่อ Extract Logic ที่ซ้ำกัน
+   ตั้งชื่อ Hooks ให้สื่อความหมาย (เช่น useAuth, useFetch)
+
+10. Utils:
+    เก็บ Utility Functions ใน Directory src/utils/
+    ตั้งชื่อ Functions ให้สื่อความหมาย
+
+11. Types:
+    กำหนด TypeScript Types สำหรับ Data Structures
+    ใช้ Types เพื่อเพิ่มความปลอดภัยและอ่านง่าย
+
+12. Documentation:
+    เขียน README.md เพื่ออธิบายโปรเจกต์
+    เขียน Comments เพื่ออธิบายโค้ด
+
+13. Code Reviews:
+    ทำการ Code Reviews อย่างสม่ำเสมอ
+    ให้เพื่อนร่วมทีมช่วยตรวจสอบโค้ด
+
+14. Continuous Integration:
+    ใช้ CI/CD Tools (เช่น GitHub Actions, Jenkins) เพื่อ Automate Testing และ Deployment
+
+สรุป:
+การจัดระเบียบโค้ดให้ได้มาตรฐานเป็นกระบวนการที่ต้องทำอย่างต่อเนื่อง และต้องปรับปรุงอยู่เสมอ การใช้ Tools ที่เหมาะสม การกำหนด Code Style ที่ชัดเจน และการทำ Code Reviews อย่างสม่ำเสมอ จะช่วยให้โปรเจกต์ของคุณมีคุณภาพสูง อ่านง่าย แก้ไขง่าย Testable และ Scalable ครับ
+
+หากคุณมีคำถามเพิ่มเติม หรือต้องการให้ช่วยปรับปรุงโค้ดส่วนไหนเป็นพิเศษ บอกได้เลยครับ

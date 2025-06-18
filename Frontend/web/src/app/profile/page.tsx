@@ -16,9 +16,7 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await handleRefreshToken();
-        console.log("Profile fetch response:", res);
-        // if (!res.ok) window.location.href = "/login";
+        await handleRefreshToken();
         const result = await getProfile();
         setProfile(result);
       } catch {

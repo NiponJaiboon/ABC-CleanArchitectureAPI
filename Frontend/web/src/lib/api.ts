@@ -62,7 +62,6 @@ export async function register(username: string, password: string): Promise<Logi
 //     return res.ok;
 // }
 
-// Frontend/web/src/lib/api.ts (ตัวอย่าง)
 
 export async function refreshToken() {
     // ตรวจสอบให้แน่ใจว่าใช้ method: 'POST'
