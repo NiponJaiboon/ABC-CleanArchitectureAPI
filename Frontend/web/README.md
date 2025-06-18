@@ -116,23 +116,23 @@ web #โฟลเดอร์หลักของโปรเจกต์
 
 web/
 ├── public/
-├── src/
-│ ├── app/ # Next.js App Router (Pages and Layouts)
-│ │ ├── login/
-│ │ │ ├── page.tsx # Login Page
+├── src/ # Source Code  1
+│ ├── app/ # Next.js App Router (Pages and Layouts)   1
+│ │ ├── login/ 1
+│ │ │ ├── page.tsx # Login Page  1
 │ │ │ └── ...
-│ │ ├── profile/
-│ │ │ ├── page.tsx # Profile Page
+│ │ ├── profile/  1
+│ │ │ ├── page.tsx # Profile Page   1
 │ │ │ └── ...
-│ │ ├── dashboard/
-│ │ │ ├── page.tsx # Dashboard Page
+│ │ ├── dashboard/   1
+│ │ │ ├── page.tsx # Dashboard Page 1
 │ │ │ └── ...
-│ │ ├── cms/
-│ │ │ ├── page.tsx # CMS Page
+│ │ ├── cms/   1
+│ │ │ ├── page.tsx # CMS Page 1
 │ │ │ └── ...
-│ │ ├── layout.tsx # Root Layout
-│ │ └── page.tsx # Home Page
-│ ├── components/ # Reusable Components
+│ │ ├── layout.tsx # Root Layout 1
+│ │ └── page.tsx # Home Page  1
+│ ├── components/ # Reusable Components   1
 │ │ ├── common/ # Common UI Components
 │ │ │ ├── Button.tsx
 │ │ │ ├── Input.tsx
@@ -177,11 +177,13 @@ web/
 │ │ ├── users.json
 │ │ └── ...
 │ └── ...
-├── README.md
-├── package.json
-├── tsconfig.json
-├── next.config.js
-└── .env.local
+├── README.md # Project Documentation  1
+├── package.json # Project Dependencies and Scripts   1
+├── tsconfig.json # TypeScript Configuration 1
+├── next.config.js # Next.js Configuration   1
+└── .env.local # Environment Variables    1
+
+# ABC Clean Architecture Frontend
 
 คำอธิบาย:
 

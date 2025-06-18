@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import { getProfile } from "@/lib/api";
-import { useAutoRefreshFetch } from "@/hooks/useAutoRefreshFetch";
+import { useFetch } from "@/hooks/useFetch";
 
 const ProfilePage: React.FC = () => {
-  const { handleRefreshToken } = useAutoRefreshFetch();
+  const { handleRefreshToken } = useFetch();
   const [profile, setProfile] = useState<{
     username: string;
     email: string;
@@ -38,11 +38,28 @@ const ProfilePage: React.FC = () => {
   }
 
   return (
-    <div>
-      <h1>โปรไฟล์</h1>
-      <p>ชื่อผู้ใช้: {profile.username}</p>
-      <p>อีเมล: {profile.email}</p>
-      <p>บทบาท: {profile.role}</p>
+    <div className="max-w-md mx-auto mt-10 p-8 bg-white rounded-xl shadow-2xl border-2 border-blue-500">
+      <h1 className="text-4xl font-extrabold text-blue-700 mb-6 text-center drop-shadow-lg">
+        โปรไฟล์
+      </h1>
+      <div className="space-y-4 text-lg">
+        <p>
+          <span className="font-semibold text-gray-700">ชื่อผู้ใช้:</span>
+          <span className="ml-2 text-blue-900 text-xl font-bold">
+            {profile.username}
+          </span>
+        </p>
+        <p>
+          <span className="font-semibold text-gray-700">อีเมล:</span>
+          <span className="ml-2 text-blue-900">{profile.email}</span>
+        </p>
+        <p>
+          <span className="font-semibold text-gray-700">บทบาท:</span>
+          <span className="ml-2 text-green-700 font-bold uppercase">
+            {profile.role}
+          </span>
+        </p>
+      </div>
     </div>
   );
 };
