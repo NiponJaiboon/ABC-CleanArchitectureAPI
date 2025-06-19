@@ -1,0 +1,109 @@
+Backend
+├── Core
+│   ├── Interfaces
+│   │   ├── IProductRepository.cs
+│   │   ├── IUnitOfWork.cs
+│   │   ├── IUserAdminService.cs
+│   │   ├── IAuthService.cs
+│   │   └── IGenericRepository.cs
+│   ├── Constants
+│   │   └── RoleConstants.cs
+│   ├── Attributes
+│   │   └── DbContextNameAttribute.cs
+│   ├── Entities
+│   │   ├── ApplicationUser.cs
+│   │   └── Product.cs
+│   └── Core.csproj
+├── API
+│   ├── Middlewares
+│   │   └── JwtFromCookieMiddleware.cs
+│   ├── Config.cs
+│   ├── Controllers
+│   │   ├── AuthController.cs
+│   │   ├── ProductsController.cs
+│   │   ├── ProfileController.cs
+│   │   └── UserAdminController.cs
+│   ├── Extensions
+│   │   ├── IdentityServerExtensions.cs
+│   │   ├── MiddlewareExtensions.cs
+│   │   ├── SeedDataExtensions.cs
+│   │   ├── ServiceCollectionExtensions.cs
+│   │   └── SwaggerServiceExtensions.cs
+│   ├── ABC.API.csproj
+│   ├── Program.cs
+│   ├── Properties
+│   │   └── launchSettings.json
+│   ├── appsettings.Development.json
+│   └── appsettings.json
+├── Application
+│   ├── Services
+│   │   ├── ProfileService.cs
+│   │   ├── UserAdminService.cs
+│   │   ├── AuthService.cs
+│   │   └── ProductService.cs
+│   ├── DTOs
+│   │   └── ProductDto.cs
+│   ├── Mappings
+│   │   └── MappingProfile.cs
+│   └── Application.csproj
+├── Infrastructure
+│   ├── Data
+│   │   ├── ApplicationDbContext.cs
+│   │   ├── FirstDbContext.cs
+│   │   ├── Migrations
+│   │   │   ├── Application
+│   │   │   │   ├── ApplicationDb
+│   │   │   │   │   ├── 20250610073315_InitApplication.Designer.cs
+│   │   │   │   │   └── 20250610073315_InitApplication.cs
+│   │   │   │   ├── FirstDb
+│   │   │   │   │   ├── 20250610073337_InitSecondContext.Designer.cs
+│   │   │   │   │   └── 20250610073337_InitSecondContext.cs
+│   │   │   │   └── SecondDb
+│   │   │   │       ├── 20250610073355_InitSecondDatabaseDb.Designer.cs
+│   │   │   │       └── 20250610073355_InitSecondDatabaseDb.cs
+│   │   │   └── IdentityServer
+│   │   │       ├── ConfigurationDb
+│   │   │           ├── 20250610073507_IdentityServerInit.Designer.cs
+│   │   │           ├── 20250610073507_IdentityServerInit.cs
+│   │   │           ├── 20250610073922_IdentityServerInitC.Designer.cs
+│   │   │           ├── 20250610073922_IdentityServerInitC.cs
+│   │   │           └── ConfigurationDbContextModelSnapshot.cs
+│   │   │       └── PersistedGrantDb
+│   │   │           ├── 20250610073534_PersistedGrantInits.Designer.cs
+│   │   │           ├── 20250610073534_PersistedGrantInits.cs
+│   │   │           ├── 20250610073937_PersistedGrantInitsC.Designer.cs
+│   │   │           ├── 20250610073937_PersistedGrantInitsC.cs
+│   │   │           └── PersistedGrantDbContextModelSnapshot.cs
+│   ├── SecondDbContext.cs
+│   └── UnitOfWork.cs
+│   ├── Migrations
+│   │   ├── 20250609072633_UpdateIdentityPostgreSQL.Designer.cs
+│   │   ├── 20250609072633_UpdateIdentityPostgreSQL.cs
+│   │   ├── ApplicationDbContextModelSnapshot.cs
+│   │   ├── FirstDb
+│   │   │   ├── 20250609074041_FirstDbContextPostgreSQL.Designer.cs
+│   │   │   ├── 20250609074041_FirstDbContextPostgreSQL.cs
+│   │   │   └── FirstDbContextModelSnapshot.cs
+│   │   └── SecondDb
+│   │       ├── 20250609074314_SecondDatabaseDb.Designer.cs
+│   │       ├── 20250609074314_SecondDatabaseDb.cs
+│   │       └── SecondDbContextModelSnapshot.cs
+│   ├── Repositories
+│   │   ├── GenericRepository.cs
+│   │   └── ProductRepository.cs
+│   └── Infrastructure.csproj
+└── Shared
+    ├── DTOs
+        ├── ChangePasswordDto.cs
+        ├── EditProfileDto.cs
+        ├── EditUserDto.cs
+        ├── ExternalLoginDto.cs
+        ├── ForgotPasswordDto.cs
+        ├── LoginDto.cs
+        ├── ProfileDto.cs
+        ├── RefreshTokenDto.cs
+        ├── RegisterDto.cs
+        ├── ResetPasswordDto.cs
+        ├── RevokeTokenDto.cs
+        └── UserInfoDto.cs
+    └── Shared.csproj

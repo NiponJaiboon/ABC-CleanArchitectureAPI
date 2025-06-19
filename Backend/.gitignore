@@ -485,3 +485,6 @@ $RECYCLE.BIN/
 
 # Duende IdentityServer ใช้สำหรับเซ็น (sign) JWT token
 API/keys/*
+
+# Ignore Visual Studio Code workspace settings
+.vscode
