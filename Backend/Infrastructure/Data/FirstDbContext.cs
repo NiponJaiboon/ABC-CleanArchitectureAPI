@@ -9,6 +9,7 @@ namespace Infrastructure.Data
             : base(options) { }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<UserFile> UserFiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

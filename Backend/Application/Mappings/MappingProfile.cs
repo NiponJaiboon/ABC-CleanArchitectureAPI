@@ -14,6 +14,7 @@ namespace Application.Mappings
         public MappingProfile()
         {
             CreateMap<Product, ProductDto>().ReverseMap();
+            CreateMap<UserFile, UserFileDto>().ReverseMap();
 
             CreateMap<RegisterDto, ApplicationUser>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Username))

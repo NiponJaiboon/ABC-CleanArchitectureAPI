@@ -24,6 +24,7 @@ namespace API.Extensions
             IConfiguration configuration
         )
         {
+            // Add DbContexts
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
             );
@@ -34,12 +35,18 @@ namespace API.Extensions
                 options.UseNpgsql(configuration.GetConnectionString("SecondDatabase"))
             );
 
+            // Register Unit of Work
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            // Register repositories
             services.AddScoped<IProductRepository, ProductRepository>();
+
+            // Register services
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<IUserAdminService, UserAdminService>();
             services.AddScoped<ProductService>();
+            services.AddScoped<FileStorageService>();
 
             services.AddAutoMapper(typeof(Application.Mappings.MappingProfile).Assembly);
 

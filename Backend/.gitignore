@@ -488,3 +488,6 @@ API/keys/*
 
 # Ignore Visual Studio Code workspace settings
 .vscode
+
+# Ignore Rider workspace settings
+Storage/
